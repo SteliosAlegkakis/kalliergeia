@@ -1,6 +1,7 @@
 import { StyleSheet, ScrollView, SafeAreaView , Text, Alert } from 'react-native';
 import FieldPreview from '@/components/FieldPreview';
 import RoundButton from '@/components/RoundButton';
+import { useRouter } from 'expo-router';
 
 const fields: any[] = [
   { name: 'Χωράφι 1', fieldId: 0 },
@@ -14,6 +15,7 @@ const fields: any[] = [
 ];
 
 export default function TabOneScreen() {
+  const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -25,7 +27,7 @@ export default function TabOneScreen() {
           ))
         )}
       </ScrollView>
-      <RoundButton onPress={() => Alert.alert('Button Pressed!')} />
+      <RoundButton onPress={() => router.push("../fieldForm")} />
     </SafeAreaView>
   );
 }
