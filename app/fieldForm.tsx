@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Pressable, ScrollView } from 'react-native';
 import { useRouter, useNavigation } from 'expo-router';
+import { addField, getFields } from './database/fieldsTable';
 
 export default function FormScreen() {
 
@@ -24,6 +25,7 @@ export default function FormScreen() {
   const handleSubmit = () => {
     if (!validateForm()) Alert.alert('Προσοχη!', 'Συμπληρώστε τα υποχρεωτικά πεδία');
     else {
+      addField(name, location, parseInt(totalTrees), parseFloat(size), description);
       Alert.alert('Επιτυχής Προσθήκη', 'Το χωράφι προστέθηκε επιτυχώς');
       router.back();
     }
