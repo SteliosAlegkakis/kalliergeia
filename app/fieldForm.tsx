@@ -16,8 +16,17 @@ export default function FormScreen() {
     navigation.setOptions({ title: 'Νέο Χωράφι' });
   }, []);
 
+  const validateForm = () => {
+    if (!name || !location || !totalTrees || !size) return false;
+    return true;
+  };
+
   const handleSubmit = () => {
-    Alert.alert('Form Submitted');
+    if (!validateForm()) Alert.alert('Προσοχη!', 'Συμπληρώστε τα υποχρεωτικά πεδία');
+    else {
+      Alert.alert('Επιτυχής Προσθήκη', 'Το χωράφι προστέθηκε επιτυχώς');
+      router.back();
+    }
   };
 
   return (
