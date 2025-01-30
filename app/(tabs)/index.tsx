@@ -1,20 +1,36 @@
 import { StyleSheet, ScrollView, SafeAreaView , Text, Alert } from 'react-native';
 import FieldPreview from '@/components/FieldPreview';
 import RoundButton from '@/components/RoundButton';
-import { useRouter } from 'expo-router';
-
-const fields: any[] = [
-  { name: 'Χωράφι 1', fieldId: 0 },
-  { name: 'Χωράφι 2', fieldId: 1 },
-  { name: 'Χωράφι 3', fieldId: 2 },
-  { name: 'Χωράφι 4', fieldId: 3 },
-  { name: 'Χωράφι 5', fieldId: 4 },
-  { name: 'Χωράφι 6', fieldId: 5 },
-  { name: 'Χωράφι 7', fieldId: 6 },
-  { name: 'Χωράφι 8', fieldId: 7 },
-];
+import { useFocusEffect, useRouter } from 'expo-router';
+import { setupDatabase } from '../database/db';
+import { useEffect, useState } from 'react';
+import { getFields } from '../database/fieldsTable';
+import React from 'react';
 
 export default function TabOneScreen() {
+
+  const [fields, setFields] = useState<any[]>([]);
+
+  const fetchFields = async () => {
+    try {
+      const fields = await getFields();
+      setFields(fields);
+    } catch (error) {
+      Alert.alert('Σφάλμα', 'Πρόβλημα στην ανάκτηση των χωραφιών');
+    }
+  }
+
+  useEffect(() => {
+    setupDatabase();
+    fetchFields();
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchFields();
+    }, [])
+  );
+
   const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
