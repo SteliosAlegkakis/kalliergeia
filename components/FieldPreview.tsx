@@ -1,7 +1,8 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { StyleSheet } from 'react-native';
+import { router } from 'expo-router';
 
 interface FieldPreviewProps {
     name: string;
@@ -10,10 +11,10 @@ interface FieldPreviewProps {
 
 const FieldPreview: React.FC<FieldPreviewProps> = ({ name, field_id }) => {
     return (
-        <View style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={() => router.push(`/fieldPage?fieldName=${name}&fieldId=${field_id}`)}>
             <Text style={styles.title}>{name}</Text>
             <AntDesign name="right" size={24} color='#fff' />
-        </View>
+        </TouchableOpacity>
     );
 };
 
