@@ -39,7 +39,7 @@ export default function TabOneScreen() {
           <Text style={styles.title}>Δεν υπάρχουν χωράφια</Text>
         ) : (
           fields.map((field, index) => (
-            <FieldPreview key={index} name={field.name} field_id={field.fieldId} />
+            <FieldPreview key={index} name={field.name} field_id={field.field_id} />
           ))
         )}
       </ScrollView>
