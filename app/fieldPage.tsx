@@ -12,6 +12,7 @@ import Task from "@/components/Task"
 export default function fieldPage() {
 
     const navigation = useNavigation();
+    const router = useRouter();
     const { fieldName, fieldId } = useLocalSearchParams(); // Get query params
 
     useEffect(() => {
@@ -86,7 +87,7 @@ export default function fieldPage() {
                 </View>
 
             </ScrollView>
-            <RoundButton onPress={() => {}} />
+            <RoundButton onPress={() => {router.push("/taskForm")}} />
         </SafeAreaView>
     );
 }
