@@ -5,11 +5,11 @@ export const getFields = async () => {
     return fields;
 }
 
-export const addField = async (name: string, location: string, totalTrees: number, size: number, description: string) => {
+export const addField = async (name: string, location: string, totalTrees: number, size: number, indication: number, description: string) => {
     await db.execAsync(
         `
-        INSERT INTO fields (name, location, total_trees, size, description)
-        VALUES ('${name}', '${location}', ${totalTrees}, ${size}, '${description}');
+        INSERT INTO fields (name, location, total_trees, size, indication, description)
+        VALUES ('${name}', '${location}', ${totalTrees}, ${size}, ${indication}, '${description}');
         `
     );
 }
@@ -36,6 +36,4 @@ export const deleteField = async (id: any) => {
         WHERE field_id = ${id};
         `
     );
-
-    alert("Διαγραφη db:"+id);
 }

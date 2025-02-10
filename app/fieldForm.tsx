@@ -11,6 +11,7 @@ export default function FormScreen() {
   const [location, setLocation] = useState('');
   const [totalTrees, setTotalTrees] = useState('');
   const [size, setSize] = useState('');
+  const [indication, setIndication] = useState('');
   const [description, setDescription] = useState('');
 
   useEffect(() => {
@@ -18,14 +19,14 @@ export default function FormScreen() {
   }, []);
 
   const validateForm = () => {
-    if (!name || !location || !totalTrees || !size) return false;
+    if (!name || !location || !totalTrees || !indication || !size) return false;
     return true;
   };
 
   const handleSubmit = () => {
     if (!validateForm()) Alert.alert('Προσοχη!', 'Συμπληρώστε τα υποχρεωτικά πεδία');
     else {
-      addField(name, location, parseInt(totalTrees), parseFloat(size), description);
+      addField(name, location, parseInt(totalTrees), parseFloat(size), parseInt(indication), description);
       Alert.alert('Επιτυχής Προσθήκη', 'Το χωράφι προστέθηκε επιτυχώς');
       router.back();
     }
@@ -60,6 +61,14 @@ export default function FormScreen() {
         style={styles.input}
         value={size}
         onChangeText={(val) => setSize(val.replace(/[^0-9.]/g, ''))}
+        keyboardType='numeric'
+      />
+
+      <Text style={styles.label}>Ένδειξη Μετρητή Νερού *</Text>
+      <TextInput
+        style={styles.input}
+        value={indication}
+        onChangeText={(val) => setIndication(val.replace(/[^0-9]/g, ''))}
         keyboardType='numeric'
       />
 

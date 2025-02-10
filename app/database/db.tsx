@@ -13,6 +13,7 @@ export const setupDatabase = () => {
             location TEXT NOT NULL,
             total_trees INTEGER NOT NULL,
             size REAL NOT NULL,
+            indication INTEGER NOT NULL,
             description TEXT
         );
         `
