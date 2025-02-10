@@ -5,8 +5,8 @@ export const getFields = async () => {
     return fields;
 }
 
-export const addField = (name: string, location: string, totalTrees: number, size: number, description: string) => {
-    db.execAsync(
+export const addField = async (name: string, location: string, totalTrees: number, size: number, description: string) => {
+    await db.execAsync(
         `
         INSERT INTO fields (name, location, total_trees, size, description)
         VALUES ('${name}', '${location}', ${totalTrees}, ${size}, '${description}');
@@ -15,25 +15,27 @@ export const addField = (name: string, location: string, totalTrees: number, siz
 }
 
 export const getField = async (id: number) => {
-    const field:any = await db.execAsync(`SELECT * FROM fields WHERE id = ${id}`);
+    const field:any = await db.execAsync(`SELECT * FROM fields WHERE field_id = ${id}`);
     return field;
 }
 
-export const updateField = (id: number, name: string, location: string, totalTrees: number, size: number, description: string) => {
-    db.execAsync(
+export const updateField = async (id: number, name: string, location: string, totalTrees: number, size: number, description: string) => {
+    await db.execAsync(
         `
         UPDATE fields
         SET name = '${name}', location = '${location}', total_trees = ${totalTrees}, size = ${size}, description = '${description}'
-        WHERE id = ${id};
+        WHERE field_id = ${id};
         `
     );
 }
 
-export const deleteField = (id: number) => {
-    db.execAsync(
+export const deleteField = async (id: any) => {
+    await db.execAsync(
         `
         DELETE FROM fields
-        WHERE id = ${id};
+        WHERE field_id = ${id};
         `
     );
+
+    alert("Διαγραφη db:"+id);
 }
