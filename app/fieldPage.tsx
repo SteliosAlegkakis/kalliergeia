@@ -1,10 +1,10 @@
 import { View } from "@/components/Themed";
-import { useRouter, useNavigation, useLocalSearchParams } from "expo-router";
+import { useRouter, useNavigation, useLocalSearchParams, Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import Entypo from '@expo/vector-icons/Entypo';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import RoundButton from "@/components/RoundButton";
 import Task from "@/components/Task"
@@ -16,12 +16,9 @@ export default function fieldPage() {
     const { fieldName, fieldId } = useLocalSearchParams(); // Get query params
 
     useEffect(() => {
-        navigation.setOptions({ title: fieldName });
-        navigation.setOptions({ headerRight: () => (
-            <TouchableOpacity onPress = {() => {}}>
-                <Entypo name="dots-three-vertical" size={24} color="white" />
-            </TouchableOpacity>
-        )})
+        navigation.setOptions(
+            {title: fieldName,}
+        );
     }, []);
 
     return (
@@ -87,7 +84,12 @@ export default function fieldPage() {
                 </View>
 
             </ScrollView>
+
             <RoundButton onPress={() => {router.push("/taskForm")}} />
+            <TouchableOpacity style={{position: 'absolute', top: '80%', right: 20, elevation: 5}} onPress={()=>{router.push(`/fieldDetails?fieldName=${fieldName}&fieldId=${fieldId}`)}}>
+                <Ionicons name="information-circle" size={50} color="white"/>
+            </TouchableOpacity>
+            
         </SafeAreaView>
     );
 }
@@ -140,5 +142,5 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: '#fff',
-    }
+    },
 });
