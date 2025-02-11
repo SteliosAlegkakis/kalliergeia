@@ -14,16 +14,16 @@ export const addField = async (name: string, location: string, totalTrees: numbe
     );
 }
 
-export const getField = async (id: number) => {
-    const field:any = await db.execAsync(`SELECT * FROM fields WHERE field_id = ${id}`);
+export const getField = async (id: any) => {
+    const field:any = await db.getAllAsync(`SELECT * FROM fields WHERE field_id = ${id}`);
     return field;
 }
 
-export const updateField = async (id: number, name: string, location: string, totalTrees: number, size: number, description: string) => {
+export const updateField = async (id: number, location: string, totalTrees: number, size: number, indication:number, description: string) => {
     await db.execAsync(
         `
         UPDATE fields
-        SET name = '${name}', location = '${location}', total_trees = ${totalTrees}, size = ${size}, description = '${description}'
+        SET location = '${location}', total_trees = ${totalTrees}, size = ${size}, indication = ${indication}, description = '${description}'
         WHERE field_id = ${id};
         `
     );
