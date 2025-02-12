@@ -14,10 +14,78 @@ export const setupDatabase = () => {
             total_trees INTEGER NOT NULL,
             size REAL NOT NULL,
             indication INTEGER NOT NULL,
+            water_price REAL NOT NULL,
             description TEXT
         );
         `
     );
+
+    db.execSync(
+        `
+        CREATE TABLE IF NOT EXISTS watering (
+            watering_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            field_id INTEGER NOT NULL,
+            cost REAL NOT NULL,
+            cubic_meter REAL NOT NULL,
+            indication INTEGER NOT NULL,
+            date TEXT NOT NULL,
+            comment TEXT
+        );
+        `
+    );
+
+    db.execSync(
+        `
+        CREATE TABLE IF NOT EXISTS fertilization (
+            fertilization_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            field_id INTEGER NOT NULL,
+            cost REAL NOT NULL,
+            name TEXT NOT NULL,
+            date TEXT NOT NULL,
+            comment TEXT
+        );
+        `
+    );
+
+    db.execSync(
+        `
+        CREATE TABLE IF NOT EXISTS spraying (
+            spraying_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            field_id INTEGER NOT NULL,
+            cost REAL NOT NULL,
+            name TEXT NOT NULL,
+            date TEXT NOT NULL,
+            comment TEXT
+        );
+        `
+    );
+
+    db.execSync(
+        `
+        CREATE TABLE IF NOT EXISTS grinding (
+            grinding_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            field_id INTEGER NOT NULL,
+            olive_kg REAL NOT NULL,
+            oil_kg REAL NOT NULL,
+            oxide REAL NOT NULL,
+            date TEXT NOT NULL,
+            comment TEXT
+        );
+        `
+    );
+
+    db.execSync(
+        `
+        CREATE TABLE IF NOT EXISTS harvest (
+            harvest_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            field_id INTEGER NOT NULL,
+            cost REAL NOT NULL,
+            sacks INTEGER NOT NULL,
+            date TEXT NOT NULL,
+            comment TEXT
+        );
+        `
+    )
 };
 
 export default db;
