@@ -15,6 +15,7 @@ export default function fieldDetails() {
     const [totalTrees, setTotalTrees] = useState('');
     const [size, setSize] = useState('');
     const [indication, setIndication] = useState('');
+    const [waterPrice, setWaterPrice] = useState('');
     const [description, setDescription] = useState('');
 
     useEffect(() => {
@@ -30,6 +31,7 @@ export default function fieldDetails() {
             setTotalTrees(field[0].total_trees);
             setSize(field[0].size);
             setIndication(field[0].indication);
+            setWaterPrice(field[0].water_price);
             setDescription(field[0].description);
         } catch (error) {
             Alert.alert('Σφάλμα', 'Πρόβλημα στην ανάκτηση των λεπτομερειών του χωραφιού');
@@ -78,8 +80,13 @@ export default function fieldDetails() {
             setIndication(fieldDetails.indication); // Revert to default if field is empty
     }
 
+    const handleWaterPriceBlur = () => {
+        if (waterPrice === '')
+            setWaterPrice(fieldDetails.water_price); // Revert to default if field is empty
+    }
+
     const handleSubmit = () => {
-        updateField(parseInt(fieldDetails.field_id), location, parseInt(totalTrees), parseFloat(size), parseInt(indication), description);
+        updateField(parseInt(fieldDetails.field_id), location, parseInt(totalTrees), parseFloat(size), parseInt(indication), parseFloat(waterPrice), description);
         Alert.alert('Επιτυχής Αλλαγή!','Οι αλλαγές αποθηκεύτηκαν επιτυχώς');
         router.back();
     }
@@ -127,6 +134,17 @@ export default function fieldDetails() {
                 onChangeText={(val) => setIndication(val.replace(/[^0-9]/g, ''))}
                 keyboardType='numeric'
                 onBlur={handleIndicationBlur}
+            />
+
+            <Text style={styles.label}>Τιμή νερού ανα κυβικό</Text>
+            <TextInput
+                placeholderTextColor="white"
+                style={styles.input}
+                value={waterPrice}
+                placeholder={fieldDetails.water_price+''}
+                onChangeText={(val) => setWaterPrice(val.replace(/[^0-9.]/g, ''))}
+                keyboardType='numeric'
+                onBlur={handleWaterPriceBlur}
             />
 
             <Text style={styles.label}>Περιγραφή</Text>

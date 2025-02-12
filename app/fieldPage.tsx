@@ -85,7 +85,7 @@ export default function fieldPage() {
 
             </ScrollView>
 
-            <RoundButton onPress={() => {router.push("/taskForm")}} />
+            <RoundButton onPress={() => {router.push(`/taskForm?fieldId=${fieldId}`)}} />
             <TouchableOpacity style={{position: 'absolute', top: '80%', right: 20, elevation: 5}} onPress={()=>{router.push(`/fieldDetails?fieldName=${fieldName}&fieldId=${fieldId}`)}}>
                 <Ionicons name="information-circle" size={50} color="white"/>
             </TouchableOpacity>

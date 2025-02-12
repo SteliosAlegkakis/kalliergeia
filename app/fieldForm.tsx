@@ -12,6 +12,7 @@ export default function FormScreen() {
   const [totalTrees, setTotalTrees] = useState('');
   const [size, setSize] = useState('');
   const [indication, setIndication] = useState('');
+  const [waterPrice, setWaterPrice] = useState('');
   const [description, setDescription] = useState('');
 
   useEffect(() => {
@@ -19,14 +20,14 @@ export default function FormScreen() {
   }, []);
 
   const validateForm = () => {
-    if (!name || !location || !totalTrees || !indication || !size) return false;
+    if (!name || !location || !totalTrees || !indication || !waterPrice || !size) return false;
     return true;
   };
 
   const handleSubmit = () => {
     if (!validateForm()) Alert.alert('Προσοχη!', 'Συμπληρώστε τα υποχρεωτικά πεδία');
     else {
-      addField(name, location, parseInt(totalTrees), parseFloat(size), parseInt(indication), description);
+      addField(name, location, parseInt(totalTrees), parseFloat(size), parseInt(indication), parseFloat(waterPrice), description);
       Alert.alert('Επιτυχής Προσθήκη', 'Το χωράφι προστέθηκε επιτυχώς');
       router.back();
     }
@@ -34,21 +35,21 @@ export default function FormScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.label}>Όνομα Χωραφιού*</Text>
+      <Text style={styles.label}>Όνομα Χωραφιού *</Text>
       <TextInput
         style={styles.input}
         value={name}
         onChangeText={setName}
       />
 
-      <Text style={styles.label}>Περιοχή*</Text>
+      <Text style={styles.label}>Περιοχή *</Text>
       <TextInput
         style={styles.input}
         value={location}
         onChangeText={setLocation}
        />
 
-      <Text style={styles.label}>Αριθμός Δέντρων*</Text>
+      <Text style={styles.label}>Αριθμός Δέντρων *</Text>
       <TextInput
         style={styles.input}
         value={totalTrees}
@@ -56,7 +57,7 @@ export default function FormScreen() {
         keyboardType='numeric'
        />
 
-      <Text style={styles.label}>Εμβαδόν (στρέμματα)*</Text>
+      <Text style={styles.label}>Εμβαδόν (στρέμματα) *</Text>
       <TextInput
         style={styles.input}
         value={size}
@@ -69,6 +70,14 @@ export default function FormScreen() {
         style={styles.input}
         value={indication}
         onChangeText={(val) => setIndication(val.replace(/[^0-9]/g, ''))}
+        keyboardType='numeric'
+      />
+
+      <Text style={styles.label}>Τιμή νερού ανα κυβικό *</Text>
+      <TextInput
+        style={styles.input}
+        value={waterPrice}
+        onChangeText={(val) => setWaterPrice(val.replace(/[^0-9.]/g, ''))}
         keyboardType='numeric'
       />
 
