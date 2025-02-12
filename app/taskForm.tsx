@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Pressable, ScrollView } from 'react-native';
-import { useRouter, useNavigation } from 'expo-router';
+import { useRouter, useNavigation, useLocalSearchParams } from 'expo-router';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { addGrinding } from './database/grindingTable';
+import { addHarvest } from './database/harvestTable';
+import { addFertilization } from './database/fertilizationTable';
+import { addSpraying } from './database/sprayingTable';
+import { addWatering } from './database/wateringTable';
+import { getWateringDetails } from './database/fieldsTable';
+import { updateIndication } from './database/fieldsTable';
 
 export default function FormScreen() {
 
   const router = useRouter();
   const navigation = useNavigation();
+  const fieldId = useLocalSearchParams().fieldId;
 
   const [description, setDescription] = useState('');
 
@@ -63,10 +71,48 @@ export default function FormScreen() {
     return true;
   };
 
+  const submitGrinding = () => {
+    addGrinding(parseInt(fieldId.toString()), oliveQuantity, oilQuantity, oxide, date.toLocaleDateString("el-GR"), description);
+    router.back();
+  };
+
+  const submitFertilization = () => {
+    addFertilization(parseInt(fieldId.toString()), cost, name, date.toLocaleDateString("el-GR"), description);
+    router.back();
+  };
+
+  const submitSpraying = () => {
+    addSpraying(parseInt(fieldId.toString()), cost, name, date.toLocaleDateString("el-GR"), description);
+    router.back();
+  };
+
+  const submitWatering = async () => {
+    const fieldDetails = await getWateringDetails(fieldId);
+    const oldIndication = fieldDetails[0].indication;
+    if(indication < oldIndication) {
+      Alert.alert('Σφάλμα', 'Η νέα τιμή του μετρητή πρέπει να είναι μεγαλύτερη από την προηγούμενη.\n\n Προηγούμενη τιμή: ' + oldIndication);
+      return;
+    }
+    const total_cm = indication - oldIndication;
+    const cost = total_cm * fieldDetails[0].water_price;
+    addWatering(parseInt(fieldId.toString()), cost, total_cm, indication, date.toLocaleDateString("el-GR"), description);
+    updateIndication(parseInt(fieldId.toString()), parseInt(indication));
+    router.back();
+  };
+
+  const submitHarvest = () => {
+    addHarvest(parseInt(fieldId.toString()), cost, sacks, date.toLocaleDateString("el-GR"), description);
+    router.back();
+  };
+
   const handleSubmit = () => {
-    if (!validateForm()) Alert.alert('Προσοχη!', 'Συμπληρώστε τα υποχρεωτικά πεδία');
+    if (!validateForm()) Alert.alert('Προσοχη!', 'Συμπληρώστε σωστά τα υποχρεωτικά πεδία');
     else {
-      Alert.alert("ok");
+      if(taskType === 'grinding') submitGrinding();
+      else if(taskType === 'fertilization') submitFertilization();
+      else if(taskType === 'spraying') submitSpraying();
+      else if(taskType === 'watering') submitWatering();
+      else if(taskType === 'harvest') submitHarvest();
     }
   };
 
@@ -113,7 +159,7 @@ export default function FormScreen() {
             style={styles.input} 
             keyboardType="numeric"
             value={oliveQuantity}
-            onChangeText={text => setOliveQuantity(parseInt(text))}
+            onChangeText={text => setOliveQuantity(parseFloat(text))}
           />
 
           <Text style={styles.label}>Ποσότητα Ελαιολάδου (κιλά) *</Text>
@@ -121,7 +167,7 @@ export default function FormScreen() {
             style={styles.input} 
             keyboardType="numeric"
             value={oilQuantity}
-            onChangeText={text => setOilQuantity(parseInt(text))}
+            onChangeText={text => setOilQuantity(parseFloat(text))}
           />
 
           <Text style={styles.label}>Οξύτητα (%) *</Text>
@@ -139,7 +185,7 @@ export default function FormScreen() {
             style={styles.input} 
             keyboardType="numeric"
             value={cost}
-            onChangeText={text => setCost(parseInt(text))}
+            onChangeText={text => setCost(parseFloat(text))}
           />
 
           <Text style={styles.label}>Όνομα Φαρμάκου *</Text>
@@ -167,7 +213,7 @@ export default function FormScreen() {
             style={styles.input} 
             keyboardType="numeric"
             value={cost}
-            onChangeText={text => setCost(parseInt(text))}
+            onChangeText={text => setCost(parseFloat(text))}
           />
 
           <Text style={styles.label}>Συνολικά Τσουβάλια *</Text>
