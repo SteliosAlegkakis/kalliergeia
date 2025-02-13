@@ -8,3 +8,12 @@ export const addFertilization = async (field_id: number, cost: number, name: str
         `
     );
 }
+
+export const getFertilization = async (field_id: any) => {
+    const fertilization = await db.getAllAsync(
+        `
+        SELECT * FROM fertilization WHERE field_id = ${field_id};
+        `
+    );
+    return fertilization;
+}

@@ -8,3 +8,12 @@ export const addWatering = async (field_id: number, cost: number, cubic_meter: n
         `
     );
 }
+
+export const getWatering = async (field_id: any) => {
+    const watering = await db.getAllAsync(
+        `
+        SELECT * FROM watering WHERE field_id = ${field_id};
+        `
+    );
+    return watering;
+}

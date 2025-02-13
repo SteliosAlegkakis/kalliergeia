@@ -8,3 +8,12 @@ export const addSpraying = async (field_id: number, cost: number, name: string, 
         `
     );
 }
+
+export const getSpraying = async (field_id: any) => {
+    const spraying = await db.getAllAsync(
+        `
+        SELECT * FROM spraying WHERE field_id = ${field_id};
+        `
+    );
+    return spraying;
+}

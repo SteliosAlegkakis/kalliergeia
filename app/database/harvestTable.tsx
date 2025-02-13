@@ -8,3 +8,12 @@ export const addHarvest = async (field_id: number, cost: number, sacks: number, 
         `
     );
 }
+
+export const getHarvest = async (field_id: any) => {
+    const harvest = await db.getAllAsync(
+        `
+        SELECT * FROM harvest WHERE field_id = ${field_id};
+        `
+    );
+    return harvest;
+}

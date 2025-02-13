@@ -23,7 +23,7 @@ export const setupDatabase = () => {
     db.execSync(
         `
         CREATE TABLE IF NOT EXISTS watering (
-            watering_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            task_id INTEGER PRIMARY KEY AUTOINCREMENT,
             field_id INTEGER NOT NULL,
             cost REAL NOT NULL,
             cubic_meter REAL NOT NULL,
@@ -37,7 +37,7 @@ export const setupDatabase = () => {
     db.execSync(
         `
         CREATE TABLE IF NOT EXISTS fertilization (
-            fertilization_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            task_id INTEGER PRIMARY KEY AUTOINCREMENT,
             field_id INTEGER NOT NULL,
             cost REAL NOT NULL,
             name TEXT NOT NULL,
@@ -50,7 +50,7 @@ export const setupDatabase = () => {
     db.execSync(
         `
         CREATE TABLE IF NOT EXISTS spraying (
-            spraying_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            task_id INTEGER PRIMARY KEY AUTOINCREMENT,
             field_id INTEGER NOT NULL,
             cost REAL NOT NULL,
             name TEXT NOT NULL,
@@ -63,7 +63,7 @@ export const setupDatabase = () => {
     db.execSync(
         `
         CREATE TABLE IF NOT EXISTS grinding (
-            grinding_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            task_id INTEGER PRIMARY KEY AUTOINCREMENT,
             field_id INTEGER NOT NULL,
             olive_kg REAL NOT NULL,
             oil_kg REAL NOT NULL,
@@ -77,7 +77,7 @@ export const setupDatabase = () => {
     db.execSync(
         `
         CREATE TABLE IF NOT EXISTS harvest (
-            harvest_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            task_id INTEGER PRIMARY KEY AUTOINCREMENT,
             field_id INTEGER NOT NULL,
             cost REAL NOT NULL,
             sacks INTEGER NOT NULL,
@@ -85,7 +85,7 @@ export const setupDatabase = () => {
             comment TEXT
         );
         `
-    )
+    );
 };
 
 export default db;
