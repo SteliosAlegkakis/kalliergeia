@@ -17,3 +17,21 @@ export const getGrinding = async (field_id: any) => {
     );
     return grinding;
 }
+
+export const getMedianOxide = async (field_id: any) => {
+    const grinding = await db.getAllAsync(
+        `
+        SELECT COALESCE(AVG(oxide), '-') as medianOxide FROM grinding WHERE field_id = ${field_id};
+        `
+    );
+    return grinding;
+}
+
+export const getTotalOil = async (field_id: any) => {
+    const grinding = await db.getAllAsync(
+        `
+        SELECT COALESCE(SUM(oil_kg), 0) as totalOil FROM grinding WHERE field_id = ${field_id};
+        `
+    );
+    return grinding;
+}

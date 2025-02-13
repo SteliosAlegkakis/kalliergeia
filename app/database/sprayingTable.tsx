@@ -17,3 +17,12 @@ export const getSpraying = async (field_id: any) => {
     );
     return spraying;
 }
+
+export const getSprayingCost = async (field_id: any) => {
+    const spraying = await db.getAllAsync(
+        `
+        SELECT SUM(cost) as totalCost FROM spraying WHERE field_id = ${field_id};
+        `
+    );
+    return spraying;
+}
