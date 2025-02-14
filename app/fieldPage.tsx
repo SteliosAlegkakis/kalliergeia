@@ -88,6 +88,7 @@ export default function fieldPage() {
 
     useFocusEffect(
         React.useCallback(() => {
+          setTaskType('grinding');
           fetchTasks();
           fetchCosts();
           fetchProduce();
