@@ -73,6 +73,7 @@ export default function FormScreen() {
 
   const submitGrinding = () => {
     addGrinding(parseInt(fieldId.toString()), oliveQuantity, oilQuantity, oxide, date.toLocaleDateString("el-GR"), description);
+    Alert.alert('Επιτυχία', 'Η εργασία καταχωρήθηκε με επιτυχία');
     router.back();
   };
 
@@ -83,6 +84,7 @@ export default function FormScreen() {
 
   const submitSpraying = () => {
     addSpraying(parseInt(fieldId.toString()), cost, name, date.toLocaleDateString("el-GR"), description);
+    Alert.alert('Επιτυχία', 'Η εργασία καταχωρήθηκε με επιτυχία');
     router.back();
   };
 
@@ -97,11 +99,13 @@ export default function FormScreen() {
     const cost = total_cm * fieldDetails[0].water_price;
     addWatering(parseInt(fieldId.toString()), cost, total_cm, indication, date.toLocaleDateString("el-GR"), description);
     updateIndication(parseInt(fieldId.toString()), parseInt(indication));
+    Alert.alert('Επιτυχία', 'Η εργασία καταχωρήθηκε με επιτυχία');
     router.back();
   };
 
   const submitHarvest = () => {
     addHarvest(parseInt(fieldId.toString()), cost, sacks, date.toLocaleDateString("el-GR"), description);
+    Alert.alert('Επιτυχία', 'Η εργασία καταχωρήθηκε με επιτυχία');
     router.back();
   };
 
