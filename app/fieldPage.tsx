@@ -79,7 +79,8 @@ export default function fieldPage() {
 
     const fetchProduce = async () => {
         const oxide:any = await getMedianOxide(fieldId);
-        setOxide(oxide[0].medianOxide+" %");
+        const roundOxide = parseFloat(oxide[0].medianOxide).toFixed(1);
+        setOxide(roundOxide+" %");
         if(oxide[0].medianOxide === "-") setOxide("-");
         const oil:any = await getTotalOil(fieldId);
         setOil(oil[0].totalOil);
@@ -164,7 +165,7 @@ export default function fieldPage() {
                     <Text style={[styles.title, {marginTop: "40%"}]}>Δεν υπάρχουν καταχωρημένες εργασίες</Text>
                 ) : (
                     tasks.map((task:any, index:any) => (
-                        <Task key={index} type={task.cost} date={task.date} task_id={task.task_id} />
+                        <Task key={index} type={taskType} task={task} />
                     ))
                 )}
                 </ScrollView>

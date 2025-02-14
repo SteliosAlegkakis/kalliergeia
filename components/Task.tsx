@@ -1,17 +1,23 @@
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 
 interface TaskProps {
     type: string;
-    date: string;
-    task_id: number;
+    task: any;
 }
 
-const Task: React.FC<TaskProps> = ({ type, date, task_id }) => {
+const Task: React.FC<TaskProps> = ({ type, task}) => {
+
+    const router = useRouter();
+
     return (
-        <TouchableOpacity style={styles.container} onPress={() => {}}>
-            <Text style={styles.title}>{type}</Text>
-            <Text style={styles.title}>{date}</Text>
+        <TouchableOpacity style={styles.container} onPress={() => {router.push({pathname: '/taskDetails', params: {task: JSON.stringify(task), type: type}})}} >
+            {(type === 'fertilization' || type === 'spraying') && <Text style={styles.title}>{task.name}</Text>}
+            {type === 'grinding' && <Text style={styles.title}>{task.oil_kg+" kg"}</Text>}
+            {type === 'harvest' && <Text style={styles.title}>{task.sacks+" τσουβάλια"}</Text>}
+            {type === 'watering' && <Text style={styles.title}>{task.cubic_meter+" m³"}</Text>}
+            <Text style={styles.title}>{task.date}</Text>
         </TouchableOpacity>
     );
 };
