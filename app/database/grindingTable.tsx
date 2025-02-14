@@ -35,3 +35,19 @@ export const getTotalOil = async (field_id: any) => {
     );
     return grinding;
 }
+
+export const deleteGrinding = async (task_id: number) => {
+    await db.execAsync(
+        `
+        DELETE FROM grinding WHERE task_id = ${task_id};
+        `
+    );
+}
+
+export const deleteGrindingByField = async (field_id: any) => {
+    await db.execAsync(
+        `
+        DELETE FROM grinding WHERE field_id = ${field_id};
+        `
+    );
+}

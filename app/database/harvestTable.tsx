@@ -26,3 +26,19 @@ export const getHarvestCost = async (field_id: any) => {
     );
     return harvest;
 }
+
+export const deleteHarvest = async (task_id: number) => {
+    await db.execAsync(
+        `
+        DELETE FROM harvest WHERE task_id = ${task_id};
+        `
+    );
+}
+
+export const deleteHarvestByField = async (field_id: any) => {
+    await db.execAsync(
+        `
+        DELETE FROM harvest WHERE field_id = ${field_id};
+        `
+    );
+}

@@ -2,6 +2,11 @@ import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { SetStateAction, useEffect, useState } from "react";
 import { TouchableOpacity, View, Text, Alert, ScrollView, TextInput, StyleSheet, Pressable } from "react-native";
 import { deleteField, getField, updateField } from "./database/fieldsTable";
+import { deleteGrindingByField } from "./database/grindingTable";
+import { deleteFertilizationByField } from "./database/fertilizationTable";
+import { deleteWateringByField } from "./database/wateringTable";
+import { deleteHarvestByField } from "./database/harvestTable";
+import { deleteSprayingByField } from "./database/sprayingTable";
 
 
 export default function fieldDetails() {
@@ -52,6 +57,11 @@ export default function fieldDetails() {
 
     const executeDelete = async () => {
         try {
+            await deleteGrindingByField(fieldId);
+            await deleteFertilizationByField(fieldId);
+            await deleteWateringByField(fieldId);
+            await deleteHarvestByField(fieldId);
+            await deleteSprayingByField(fieldId);
             await deleteField(fieldId);
             router.navigate('/(tabs)');
         } catch (error) {

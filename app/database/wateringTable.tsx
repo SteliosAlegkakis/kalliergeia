@@ -26,3 +26,19 @@ export const getWateringCost = async (field_id: any) => {
     );
     return watering;
 }
+
+export const deleteWatering = async (task_id: number) => {
+    await db.execAsync(
+        `
+        DELETE FROM watering WHERE task_id = ${task_id};
+        `
+    );
+}
+
+export const deleteWateringByField = async (field_id: any) => {
+    await db.execAsync(
+        `
+        DELETE FROM watering WHERE field_id = ${field_id};
+        `
+    );
+}

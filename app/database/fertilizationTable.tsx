@@ -26,3 +26,19 @@ export const getFertilizationCost = async (field_id: any) => {
     );
     return fertilization;
 }
+
+export const deleteFertilization = async (task_id: number) => {
+    await db.execAsync(
+        `
+        DELETE FROM fertilization WHERE task_id = ${task_id};
+        `
+    );
+}
+
+export const deleteFertilizationByField = async (field_id: any) => {
+    await db.execAsync(
+        `
+        DELETE FROM fertilization WHERE field_id = ${field_id};
+        `
+    );
+}

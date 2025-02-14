@@ -26,3 +26,19 @@ export const getSprayingCost = async (field_id: any) => {
     );
     return spraying;
 }
+
+export const deleteSpraying = async (task_id: number) => {
+    await db.execAsync(
+        `
+        DELETE FROM spraying WHERE task_id = ${task_id};
+        `
+    );
+}
+
+export const deleteSprayingByField = async (field_id: any) => {
+    await db.execAsync(
+        `
+        DELETE FROM spraying WHERE field_id = ${field_id};
+        `
+    );
+}
