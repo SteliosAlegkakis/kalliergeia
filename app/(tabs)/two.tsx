@@ -11,7 +11,7 @@ import { getWateringCostTotal } from '../database/wateringTable';
 import { getFertilizationCostTotal } from '../database/fertilizationTable';
 import { getSprayingCostTotal } from '../database/sprayingTable';
 import { getHarvestCostTotal } from '../database/harvestTable';
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 
 
 export default function TabTwoScreen() {
@@ -119,13 +119,13 @@ export default function TabTwoScreen() {
       </View>
       <View style={[styles.row, {marginTop: 10,marginLeft: 10, alignItems: 'center'}, {backgroundColor: 'black'}]}>
         <Text style={[styles.title, {color: '#fff'}]}>
-          <FontAwesome5 name="history" size={20} color="white"/>
+          <FontAwesome5 name="history" size={20} color="white"/>{"  "}
           Ιστορικό Πωλήσεων
         </Text>
       </View>
 
 
-      <RoundButton onPress={() => {}} />
+      <RoundButton onPress={() => {router.push("../incomeForm")}} />
     </SafeAreaView>
   );
 }
