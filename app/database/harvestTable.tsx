@@ -27,6 +27,15 @@ export const getHarvestCost = async (field_id: any) => {
     return harvest;
 }
 
+export const getHarvestCostTotal = async () => {
+    const harvest = await db.getAllAsync(
+        `
+        SELECT IFNULL(SUM(cost), 0) as totalCost FROM harvest;
+        `
+    );
+    return harvest;
+}
+
 export const deleteHarvest = async (task_id: number) => {
     await db.execAsync(
         `

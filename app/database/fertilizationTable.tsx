@@ -27,6 +27,15 @@ export const getFertilizationCost = async (field_id: any) => {
     return fertilization;
 }
 
+export const getFertilizationCostTotal = async () => {
+    const fertilization = await db.getAllAsync(
+        `
+        SELECT IFNULL(SUM(cost), 0) as totalCost FROM fertilization;
+        `
+    );
+    return fertilization;
+}
+
 export const deleteFertilization = async (task_id: number) => {
     await db.execAsync(
         `

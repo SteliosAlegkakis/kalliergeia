@@ -27,6 +27,15 @@ export const getSprayingCost = async (field_id: any) => {
     return spraying;
 }
 
+export const getSprayingCostTotal = async () => {
+    const spraying = await db.getAllAsync(
+        `
+        SELECT IFNULL(SUM(cost), 0) as totalCost FROM spraying;
+        `
+    );
+    return spraying;
+}
+
 export const deleteSpraying = async (task_id: number) => {
     await db.execAsync(
         `

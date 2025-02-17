@@ -27,6 +27,15 @@ export const getWateringCost = async (field_id: any) => {
     return watering;
 }
 
+export const getWateringCostTotal = async () => {
+    const watering = await db.getAllAsync(
+        `
+        SELECT IFNULL(SUM(cost), 0) as totalCost FROM watering;
+        `
+    );
+    return watering;
+}
+
 export const deleteWatering = async (task_id: number) => {
     await db.execAsync(
         `
