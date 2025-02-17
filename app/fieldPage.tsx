@@ -15,6 +15,7 @@ import { getGrinding, getMedianOxide, getTotalOil } from "./database/grindingTab
 import { getHarvest, getHarvestCost } from "./database/harvestTable";
 import { getFertilization, getFertilizationCost } from "./database/fertilizationTable";
 import { getSpraying, getSprayingCost } from "./database/sprayingTable";
+import { PieChart } from "react-native-chart-kit";
 
 export default function fieldPage() {
 
@@ -111,24 +112,48 @@ export default function fieldPage() {
                         </Text>
                         <Text style={[styles.title, {color: '#AFAFAF'}]}>Συνολικά Έξοδα</Text>
                     </View>
-                    <View style={[styles.row, {marginBottom:10}]}>
-                        <View style={[styles.costContainer]}>
-                            <Text style={styles.title}>Πότισμα</Text>
-                            <Text style={styles.cost}>- {waterCost} €</Text>
-                        </View>
-                        <View style={[styles.costContainer]}>
-                            <Text style={styles.title}>Ψέκασμα</Text>
-                            <Text style={styles.cost}>- {sprayCost} €</Text>
-                        </View>
-                        <View style={[styles.costContainer]}>
-                            <Text style={styles.title}>Λίπανση</Text>
-                            <Text style={styles.cost}>- {fertilCost} €</Text>
-                        </View>
-                        <View style={[styles.costContainer]}>
-                            <Text style={styles.title}>Μάζεμα</Text>
-                            <Text style={styles.cost}>- {harvestCost} €</Text>
-                        </View>
-                    </View>
+                    <PieChart
+                        data={[
+                            {
+                            name: "€ Πότισμα",
+                            cost: waterCost,
+                            color: "rgba(131, 167, 234, 1)",
+                            legendFontColor: "white",
+                            legendFontSize: 15
+                            },
+                            {
+                            name: "€ Λίπασμα",
+                            cost: fertilCost,
+                            color: "rgb(171, 190, 46)",
+                            legendFontColor: "white",
+                            legendFontSize: 15
+                            },
+                            {
+                            name: "€ Ψέκασμα",
+                            cost: sprayCost,
+                            color: "rgba(123, 31, 162, 1)",
+                            legendFontColor: "white",
+                            legendFontSize: 15
+                            },
+                            {
+                            name: "€ Συγκομιδή",
+                            cost:  harvestCost,
+                            color: "rgba(58, 131, 121, 1)",
+                            legendFontColor: "white",
+                            legendFontSize: 15
+                            },
+                        ]}
+                        width={350}
+                        height={200}
+                        chartConfig={{
+                            decimalPlaces: 2,
+                            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                        }}
+                        accessor="cost"
+                        backgroundColor="transparent"
+                        paddingLeft="0"
+                        absolute
+                    />
                     <View style={styles.row}>
                         <Text style={styles.title}>Παραγωγή</Text>
                     </View>
