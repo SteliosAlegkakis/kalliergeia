@@ -34,10 +34,10 @@ export default function fieldPage() {
         { label: 'Ψέκασμα', value: 'spraying' },
     ]);
 
-    const [fertilCost, setFertilCost] = useState();
-    const [waterCost, setWaterCost] = useState();
-    const [harvestCost, setHarvestCost] = useState();
-    const [sprayCost, setSprayCost] = useState();
+    const [fertilCost, setFertilCost] = useState(0);
+    const [waterCost, setWaterCost] = useState(0);
+    const [harvestCost, setHarvestCost] = useState(0);
+    const [sprayCost, setSprayCost] = useState(0);
     const [totalCost, setTotalCost] = useState();
 
     const [oil, setOil] = useState(0);
