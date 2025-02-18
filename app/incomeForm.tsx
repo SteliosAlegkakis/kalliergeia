@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Pressable, ScrollView } from 'react-native';
 import { useRouter, useNavigation } from 'expo-router';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { addSale } from './database/saleTable';
 
 export default function incomeForm() {
 
@@ -11,6 +13,19 @@ export default function incomeForm() {
   const [pricePerKilo, setPricePerKilo] = useState('');
   const [total, setTotal] = useState('');
   const [description, setDescription] = useState('');
+  const [date, setDate] = useState(new Date());
+
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const toggleDatePicker = () => setShowDatePicker(!showDatePicker);
+  const onChangeDate = (event: any, selectedDate: any) => {
+    if(event.type === 'dismissed') {
+      toggleDatePicker();
+      return;
+    };
+    const currentDate = selectedDate || date;
+    setDate(currentDate);
+    toggleDatePicker();
+  };
 
   useEffect(() => {
     navigation.setOptions({ title: 'Προσθήκη πώλησης' });
@@ -24,7 +39,7 @@ export default function incomeForm() {
   const handleSubmit = () => {
     if (!validateForm()) Alert.alert('Προσοχη!', 'Συμπληρώστε τα υποχρεωτικά πεδία');
     else {
-    //   addField(name, location, parseInt(totalTrees), parseFloat(size), parseInt(indication), parseFloat(waterPrice), description);
+      addSale(parseFloat(oil), parseFloat(pricePerKilo), parseFloat(total), date.toLocaleDateString('el-GR'), description);
       Alert.alert('Επιτυχής Προσθήκη', 'Η πώληση προστέθηκε επιτυχώς');
       router.back();
     }
@@ -33,11 +48,30 @@ export default function incomeForm() {
   return (
     <ScrollView style={styles.container}>
 
+      <Text style={styles.label}>Ημερομηνία *</Text>
+      {
+        showDatePicker && (
+          <DateTimePicker
+              mode='date'
+              display='spinner'
+              value={date}
+              onChange={onChangeDate}
+            />
+          )
+      }
+      <Pressable onPress={toggleDatePicker}>
+        <TextInput style={styles.input}
+          value={date.toLocaleDateString('el-GR')}
+          editable={false}
+          onChangeText={text => setDate(new Date(text))}
+        />
+      </Pressable>
+
       <Text style={styles.label}>Κιλά Ελαιολάδου *</Text>
       <TextInput
         style={styles.input}
         value={oil}
-        onChangeText={(val) => setOil(val.replace(/[^0-9]/g, ''))}
+        onChangeText={(val) => setOil(val.replace(/[^0-9.]/g, ''))}
         keyboardType='numeric'
        />
 
