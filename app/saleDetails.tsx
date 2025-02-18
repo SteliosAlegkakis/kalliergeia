@@ -2,11 +2,6 @@ import { router, useNavigation } from "expo-router";
 import { useSearchParams } from "expo-router/build/hooks";
 import { useEffect } from "react";
 import { Text, View, StyleSheet, Pressable, Alert } from "react-native";
-import { deleteFertilization } from "./database/fertilizationTable";
-import { deleteWatering } from "./database/wateringTable";
-import { deleteSpraying } from "./database/sprayingTable";
-import { deleteGrinding } from "./database/grindingTable";
-import { deleteHarvest } from "./database/harvestTable";
 import { deleteSale } from "./database/saleTable";
 
 const saleDetails = () => {
