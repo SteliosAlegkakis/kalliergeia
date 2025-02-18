@@ -102,7 +102,7 @@ export default function fieldPage() {
                     <View style={styles.row}>
                         <Text style={styles.title}>Έξοδα</Text>
                         <TouchableOpacity style={styles.button} onPress={() => {}}>
-                            <Text style={styles.title}>2024</Text>
+                            <Text style={styles.title}>2025</Text>
                             <AntDesign name="down" size={16} color='#fff' />
                         </TouchableOpacity>
                     </View>
@@ -188,7 +188,7 @@ export default function fieldPage() {
 
                 <ScrollView style={[]}>
                 {tasks.length === 0 ? (
-                    <Text style={[styles.title, {marginTop: "40%"}]}>Δεν υπάρχουν καταχωρημένες εργασίες</Text>
+                    <Text style={[styles.title, {marginTop: "30%"}]}>Δεν υπάρχουν καταχωρημένες εργασίες</Text>
                 ) : (
                     tasks.map((task:any, index:any) => (
                         <Task key={index} type={taskType} task={task} />
