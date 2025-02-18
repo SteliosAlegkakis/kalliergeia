@@ -1,6 +1,4 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
-
-import EditScreenInfo from '@/components/EditScreenInfo';
+import { StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { PieChart } from 'react-native-chart-kit';
 import { useEffect, useState } from 'react';
@@ -12,7 +10,8 @@ import { getFertilizationCostTotal } from '../database/fertilizationTable';
 import { getSprayingCostTotal } from '../database/sprayingTable';
 import { getHarvestCostTotal } from '../database/harvestTable';
 import { router, useFocusEffect } from 'expo-router';
-
+import { getOil, getSales, getTotalIncome } from '../database/saleTable';
+import Sale from '@/components/Sale';
 
 export default function TabTwoScreen() {
 
@@ -21,6 +20,11 @@ export default function TabTwoScreen() {
   const [spraying, setSpraying] = useState(0);
   const [harvest, setHarvest] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
+
+  const [income, setIncome] = useState(0);
+  const [oil, setOil] = useState(0);
+  const [sales, setSales] = useState<any>([]);
+  
 
   const fetchCosts = async () => {
     const wateringCost: any = await getWateringCostTotal();
@@ -35,12 +39,23 @@ export default function TabTwoScreen() {
     setTotalCost(total);
   }
 
+  const fetchProduction = async () => {
+    const totalIncome: any = await getTotalIncome();
+    setIncome(totalIncome[0].totalIncome);
+    const oil: any = await getOil();
+    setOil(oil[0].totalOil);
+    const sales:any = await getSales();
+    setSales(sales);
+  }
+
   useEffect(() => {
     fetchCosts();
+    fetchProduction();
   }, []);
 
   useFocusEffect(() => {
     fetchCosts();
+    fetchProduction();
   });
 
 
@@ -50,7 +65,7 @@ export default function TabTwoScreen() {
         <View style={styles.row}>
           <Text style={styles.title}>Έξοδα</Text>
           <TouchableOpacity style={styles.button} onPress={() => {}}>
-            <Text style={styles.title}>2024</Text>
+            <Text style={styles.title}>2025</Text>
             <AntDesign name="down" size={16} color='#fff' />
           </TouchableOpacity>
         </View>
@@ -108,11 +123,11 @@ export default function TabTwoScreen() {
         </View>
         <View style={[styles.row, {width: '60%'}, {marginTop: 10}]}>
           <View style={styles.column}>
-            <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>1000 €</Text>
+            <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{income} €</Text>
             <Text style={[styles.title, {color: "#AFAFAF"}]}>'Εσοδα</Text>
           </View>
           <View style={styles.column}>
-            <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>100 kg</Text>
+            <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{oil} kg</Text>
             <Text style={[styles.title, {color: "#AFAFAF"}]}>Ελαιόλαδο</Text>
           </View>
         </View>
@@ -123,7 +138,16 @@ export default function TabTwoScreen() {
           Ιστορικό Πωλήσεων
         </Text>
       </View>
-
+      
+      <ScrollView>
+        {sales.length === 0 ? (
+          <Text style={[styles.title, {color: '#fff'}, {marginTop: "30%"}]}>Δεν υπάρχουν καταχωρημένες πωλήσεις</Text>
+        ) : (
+          sales.map((sale:any, index:any) => (
+              <Sale key={index} sale={sale} />
+          ))
+        )}
+      </ScrollView>
 
       <RoundButton onPress={() => {router.push("../incomeForm")}} />
     </SafeAreaView>
