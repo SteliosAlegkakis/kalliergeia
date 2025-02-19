@@ -5,11 +5,11 @@ export const getFields = async () => {
     return fields;
 }
 
-export const addField = async (name: string, location: string, totalTrees: number, size: number, indication: number, water_price: number, description: string) => {
+export const addField = async (name: string, lat: number, lon: number, totalTrees: number, size: string, description: string) => {
     await db.execAsync(
         `
-        INSERT INTO fields (name, location, total_trees, size, indication, water_price, description)
-        VALUES ('${name}', '${location}', ${totalTrees}, ${size}, ${indication}, ${water_price}, '${description}');
+        INSERT INTO fields (name, lat, lon, total_trees, size, description)
+        VALUES ('${name}', '${lat}', ${lon}, ${totalTrees}, '${size}', '${description}');
         `
     );
 }
@@ -19,11 +19,11 @@ export const getField = async (id: any) => {
     return field;
 }
 
-export const updateField = async (id: number, location: string, totalTrees: number, size: number, indication:number, water_price: number, description: string) => {
+export const updateField = async (id: number, lat: number, lon: number, totalTrees: number, size: string, description: string) => {
     await db.execAsync(
         `
         UPDATE fields
-        SET location = '${location}', total_trees = ${totalTrees}, size = ${size}, indication = ${indication}, water_price = ${water_price}, description = '${description}'
+        SET lat = '${lat}', lon = '${lon}', total_trees = ${totalTrees}, size = ${size}, description = '${description}'
         WHERE field_id = ${id};
         `
     );

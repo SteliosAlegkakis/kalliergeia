@@ -10,11 +10,10 @@ export const setupDatabase = () => {
         CREATE TABLE IF NOT EXISTS fields (
             field_id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            location TEXT NOT NULL,
+            lat REAL NOT NULL,
+            lon REAL NOT NULL,
             total_trees INTEGER NOT NULL,
-            size REAL NOT NULL,
-            indication INTEGER NOT NULL,
-            water_price REAL NOT NULL,
+            size TEXT,
             description TEXT
         );
         `
