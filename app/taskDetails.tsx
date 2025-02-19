@@ -7,6 +7,7 @@ import { deleteWatering } from "./database/wateringTable";
 import { deleteSpraying } from "./database/sprayingTable";
 import { deleteGrinding } from "./database/grindingTable";
 import { deleteHarvest } from "./database/harvestTable";
+import { deleteOther } from "./database/otherTable";
 
 const taskDetails = () => {
 
@@ -40,6 +41,8 @@ const taskDetails = () => {
                             deleteGrinding(task.task_id);
                         } else if (type === 'harvest') {
                             deleteHarvest(task.task_id);
+                        } else if (type === 'other') {
+                            deleteOther(task.task_id);
                         }
                         router.back();
                     },
@@ -97,6 +100,14 @@ const taskDetails = () => {
                     <Text style={styles.value}>{task.cost} €</Text>
                     <Text style={styles.label}>Τσουβάλια</Text>
                     <Text style={styles.value}>{task.sacks} τσουβάλια</Text>
+                </>
+            )}
+            {type === 'other' && (
+                <>
+                    <Text style={styles.label}>Όνομα Εργασίας</Text>
+                    <Text style={styles.value}>{task.task_name}</Text>
+                    <Text style={styles.label}>Κόστος</Text>
+                    <Text style={styles.value}>{task.cost} €</Text>
                 </>
             )}
 

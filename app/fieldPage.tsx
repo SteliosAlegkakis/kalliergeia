@@ -16,6 +16,7 @@ import { getHarvest, getHarvestCost } from "./database/harvestTable";
 import { getFertilization, getFertilizationCost } from "./database/fertilizationTable";
 import { getSpraying, getSprayingCost } from "./database/sprayingTable";
 import { PieChart } from "react-native-chart-kit";
+import { getOther, getOtherCost } from "./database/otherTable";
 
 export default function fieldPage() {
 
@@ -32,12 +33,14 @@ export default function fieldPage() {
         { label: 'Πότισμα', value: 'watering' },
         { label: 'Συγκομιδή', value: 'harvest' },
         { label: 'Ψέκασμα', value: 'spraying' },
+        { label : 'Άλλο', value: 'other'}
     ]);
 
     const [fertilCost, setFertilCost] = useState(0);
     const [waterCost, setWaterCost] = useState(0);
     const [harvestCost, setHarvestCost] = useState(0);
     const [sprayCost, setSprayCost] = useState(0);
+    const [otherCost, setOtherCost] = useState(0);
     const [totalCost, setTotalCost] = useState();
 
     const [oil, setOil] = useState(0);
@@ -60,6 +63,7 @@ export default function fieldPage() {
             if(taskType === 'harvest') tasks = await getHarvest(fieldId);
             if(taskType === 'fertilization') tasks = await getFertilization(fieldId);
             if(taskType === 'spraying') tasks = await getSpraying(fieldId);
+            if(taskType === 'other') tasks = await getOther(fieldId);
             setTasks(tasks);
         } catch (error) {
             alert("Error fetching tasks");
@@ -75,7 +79,9 @@ export default function fieldPage() {
         setHarvestCost(harvestCost[0].totalCost);
         const sprayCost:any = await getSprayingCost(fieldId);
         setSprayCost(sprayCost[0].totalCost);
-        setTotalCost(waterCost[0].totalCost + fertilCost[0].totalCost + harvestCost[0].totalCost + sprayCost[0].totalCost);
+        const otherCost:any = await getOtherCost(fieldId);
+        setOtherCost(otherCost[0].totalCost);
+        setTotalCost(waterCost[0].totalCost + fertilCost[0].totalCost + harvestCost[0].totalCost + sprayCost[0].totalCost + otherCost[0].totalCost);
     }
 
     const fetchProduce = async () => {
@@ -139,6 +145,13 @@ export default function fieldPage() {
                             name: "€ Συγκομιδή",
                             cost:  harvestCost,
                             color: "rgba(58, 131, 121, 1)",
+                            legendFontColor: "white",
+                            legendFontSize: 15
+                            },
+                            {
+                            name: "€ Άλλο",
+                            cost: otherCost,
+                            color: "rgb(205, 149, 61)",
                             legendFontColor: "white",
                             legendFontSize: 15
                             },

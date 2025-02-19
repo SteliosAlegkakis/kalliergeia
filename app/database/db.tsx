@@ -87,6 +87,19 @@ export const setupDatabase = () => {
 
     db.execSync(
         `
+        CREATE TABLE IF NOT EXISTS other (
+            task_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            field_id INTEGER NOT NULL,
+            task_name TEXT NOT NULL,
+            cost REAL NOT NULL,
+            date TEXT NOT NULL,
+            comment TEXT
+        );
+        `
+    );
+
+    db.execSync(
+        `
         CREATE TABLE IF NOT EXISTS sale (
             sale_id INTEGER PRIMARY KEY AUTOINCREMENT,
             oil_kg REAL NOT NULL,

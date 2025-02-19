@@ -12,6 +12,7 @@ import { getHarvestCostTotal } from '../database/harvestTable';
 import { router, useFocusEffect } from 'expo-router';
 import { getOil, getSales, getTotalIncome } from '../database/saleTable';
 import Sale from '@/components/Sale';
+import { getOtherCostTotal } from '../database/otherTable';
 
 export default function TabTwoScreen() {
 
@@ -19,6 +20,7 @@ export default function TabTwoScreen() {
   const [fertilization, setFertilization] = useState(0);
   const [spraying, setSpraying] = useState(0);
   const [harvest, setHarvest] = useState(0);
+  const [other, setOther] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
 
   const [income, setIncome] = useState(0);
@@ -31,11 +33,13 @@ export default function TabTwoScreen() {
     const fertilizationCost: any = await getFertilizationCostTotal();
     const sprayingCost: any = await getSprayingCostTotal();
     const harvestCost: any = await getHarvestCostTotal();
+    const otherCost: any = await getOtherCostTotal();
     setWatering(wateringCost[0].totalCost);
     setFertilization(fertilizationCost[0].totalCost);
     setSpraying(sprayingCost[0].totalCost);
     setHarvest(harvestCost[0].totalCost);
-    const total = wateringCost[0].totalCost + fertilizationCost[0].totalCost + sprayingCost[0].totalCost + harvestCost[0].totalCost;
+    setOther(otherCost[0].totalCost);
+    const total = wateringCost[0].totalCost + fertilizationCost[0].totalCost + sprayingCost[0].totalCost + harvestCost[0].totalCost + otherCost[0].totalCost;
     setTotalCost(total);
   }
 
@@ -106,7 +110,15 @@ export default function TabTwoScreen() {
               legendFontColor: "#7F7F7F",
               legendFontSize: 15
             },
+            {
+              name: "€ Άλλo",
+              cost: other,
+              color: "rgb(205, 149, 61)",
+              legendFontColor: "#7F7F7F",
+              legendFontSize: 15
+            },
           ]}
+          
           width={350}
           height={200}
           chartConfig={{

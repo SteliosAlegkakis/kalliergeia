@@ -8,6 +8,7 @@ import { addHarvest } from './database/harvestTable';
 import { addFertilization } from './database/fertilizationTable';
 import { addSpraying } from './database/sprayingTable';
 import { addWatering } from './database/wateringTable';
+import { addOther } from './database/otherTable';
 
 export default function FormScreen() {
 
@@ -28,6 +29,8 @@ export default function FormScreen() {
 
   const [sacks, setSacks] = useState<any>();
 
+  const [task_name, setTaskName] = useState('');
+
   const [open, setOpen] = useState(false);
   const [taskType, setTaskType] = useState<string | null>(null);
   const [items, setItems] = useState([
@@ -36,6 +39,7 @@ export default function FormScreen() {
     { label: 'Πότισμα', value: 'watering' },
     { label: 'Συγκομιδή', value: 'harvest' },
     { label: 'Ψέκασμα', value: 'spraying' },
+    { label: 'Άλλο', value: 'other' },
   ]);
 
   const [date, setDate] = useState(new Date());
@@ -65,6 +69,8 @@ export default function FormScreen() {
       if (!cubic || !cost) return false;
     } else if (taskType === 'harvest') {
       if (!cost || !sacks) return false
+    } else if (taskType === 'other') {
+      if (!cost || !task_name) return false;
     }
     return true;
   };
@@ -98,6 +104,12 @@ export default function FormScreen() {
     router.back();
   };
 
+  const submitOther = () => {
+    addOther(parseInt(fieldId.toString()), cost, task_name, date.toLocaleDateString("el-GR"), description);
+    Alert.alert('Επιτυχία', 'Η εργασία καταχωρήθηκε με επιτυχία');
+    router.back();
+  }
+
   const handleSubmit = () => {
     if (!validateForm()) Alert.alert('Προσοχη!', 'Συμπληρώστε σωστά τα υποχρεωτικά πεδία');
     else {
@@ -106,6 +118,7 @@ export default function FormScreen() {
       else if(taskType === 'spraying') submitSpraying();
       else if(taskType === 'watering') submitWatering();
       else if(taskType === 'harvest') submitHarvest();
+      else if(taskType === 'other') submitOther();
     }
   };
 
@@ -222,6 +235,23 @@ export default function FormScreen() {
             keyboardType="numeric"
             value={sacks}
             onChangeText={text => setSacks(parseInt(text))}
+          />
+        </>)}
+
+        { taskType === 'other' && (<>
+          <Text style={styles.label}>Όνομα Εργασίας *</Text>
+          <TextInput 
+            style={styles.input} 
+            value={task_name}
+            onChangeText={text => setTaskName(text)}
+          />
+
+          <Text style={styles.label}>Κόστος (€) *</Text>
+          <TextInput 
+            style={styles.input} 
+            keyboardType="numeric"
+            value={cost}
+            onChangeText={text => setCost(parseFloat(text))}
           />
         </>)}
 

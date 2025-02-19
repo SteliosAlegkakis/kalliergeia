@@ -17,6 +17,7 @@ const Task: React.FC<TaskProps> = ({ type, task}) => {
             {type === 'grinding' && <Text style={styles.title}>{task.oil_kg+" kg"}</Text>}
             {type === 'harvest' && <Text style={styles.title}>{task.sacks+" τσουβάλια"}</Text>}
             {type === 'watering' && <Text style={styles.title}>{task.cubic_meter+" m³"}</Text>}
+            {type === 'other' && <Text style={styles.title}>{task.task_name}</Text>}
             <Text style={styles.title}>{task.date}</Text>
         </TouchableOpacity>
     );
