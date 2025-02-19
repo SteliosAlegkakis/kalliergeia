@@ -1,33 +1,61 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Pressable, ScrollView } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Pressable, ScrollView, ActivityIndicator } from 'react-native';
 import { useRouter, useNavigation } from 'expo-router';
 import { addField, getFields } from './database/fieldsTable';
+import MapView, { Marker, Region } from 'react-native-maps';
+import * as Location from 'expo-location';
 
 export default function FormScreen() {
 
   const router = useRouter();
   const navigation = useNavigation();
   const [name, setName] = useState('');
-  const [location, setLocation] = useState('');
   const [totalTrees, setTotalTrees] = useState('');
   const [size, setSize] = useState('');
-  const [indication, setIndication] = useState('');
-  const [waterPrice, setWaterPrice] = useState('');
   const [description, setDescription] = useState('');
+
+  const [mapLocation, setMapLocation] = useState<{ latitude: number; longitude: number }>({ latitude: 35.308010695609205, longitude: 25.082387924194336 }); 
+  const [region, setRegion] = useState<Region | undefined>(undefined);
 
   useEffect(() => {
     navigation.setOptions({ title: 'Νέο Χωράφι' });
+
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        return;
+      }
+
+      let userLocation = await Location.getCurrentPositionAsync({});
+      setRegion({
+        latitude: userLocation.coords.latitude,
+        longitude: userLocation.coords.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
+
+      setMapLocation({
+        latitude: userLocation.coords.latitude,
+        longitude: userLocation.coords.longitude,
+      });
+
+    })();
   }, []);
 
+  const handleMarkerDragEnd = (event: any) => {
+    const { latitude, longitude } = event.nativeEvent.coordinate;
+    setMapLocation({ latitude, longitude });
+  };
+
   const validateForm = () => {
-    if (!name || !location || !totalTrees || !indication || !waterPrice || !size) return false;
+    if (!name || !totalTrees) return false;
     return true;
   };
 
   const handleSubmit = () => {
     if (!validateForm()) Alert.alert('Προσοχη!', 'Συμπληρώστε τα υποχρεωτικά πεδία');
     else {
-      addField(name, location, parseInt(totalTrees), parseFloat(size), parseInt(indication), parseFloat(waterPrice), description);
+      addField(name, mapLocation.latitude, mapLocation.longitude, parseInt(totalTrees), size, description);
       Alert.alert('Επιτυχής Προσθήκη', 'Το χωράφι προστέθηκε επιτυχώς');
       router.back();
     }
@@ -42,13 +70,6 @@ export default function FormScreen() {
         onChangeText={setName}
       />
 
-      <Text style={styles.label}>Περιοχή *</Text>
-      <TextInput
-        style={styles.input}
-        value={location}
-        onChangeText={setLocation}
-       />
-
       <Text style={styles.label}>Αριθμός Δέντρων *</Text>
       <TextInput
         style={styles.input}
@@ -57,7 +78,7 @@ export default function FormScreen() {
         keyboardType='numeric'
        />
 
-      <Text style={styles.label}>Εμβαδόν (στρέμματα) *</Text>
+      <Text style={styles.label}>Εμβαδόν (στρέμματα)</Text>
       <TextInput
         style={styles.input}
         value={size}
@@ -65,21 +86,18 @@ export default function FormScreen() {
         keyboardType='numeric'
       />
 
-      <Text style={styles.label}>Ένδειξη Μετρητή Νερού *</Text>
-      <TextInput
-        style={styles.input}
-        value={indication}
-        onChangeText={(val) => setIndication(val.replace(/[^0-9]/g, ''))}
-        keyboardType='numeric'
-      />
-
-      <Text style={styles.label}>Τιμή νερού ανα κυβικό *</Text>
-      <TextInput
-        style={styles.input}
-        value={waterPrice}
-        onChangeText={(val) => setWaterPrice(val.replace(/[^0-9.]/g, ''))}
-        keyboardType='numeric'
-      />
+      <Text style={styles.label}>Τοποθεσία</Text>
+      <View style={styles.mapContainer}>
+        <MapView
+          style={styles.map}
+          region={region}
+          onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
+        >
+        {mapLocation && (
+          <Marker coordinate={{ latitude: mapLocation.latitude, longitude: mapLocation.longitude }} draggable onDragEnd={handleMarkerDragEnd} />
+        )}
+        </MapView>
+      </View>
 
       <Text style={styles.label}>Περιγραφή</Text>
       <TextInput
@@ -106,6 +124,15 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
+  mapContainer: { 
+    height: 250, 
+    borderRadius: 10, 
+    overflow: 'hidden', 
+    marginVertical: 10 
+  },
+  map: { 
+    flex: 1 
+  },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -113,7 +140,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   input: {
-    // height: 100,
     marginTop: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
@@ -129,6 +155,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
+    marginBottom: 40,
   },
   submit: {
     width: '50%',

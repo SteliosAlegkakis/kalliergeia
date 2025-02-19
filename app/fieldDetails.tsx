@@ -7,6 +7,8 @@ import { deleteFertilizationByField } from "./database/fertilizationTable";
 import { deleteWateringByField } from "./database/wateringTable";
 import { deleteHarvestByField } from "./database/harvestTable";
 import { deleteSprayingByField } from "./database/sprayingTable";
+import MapView, { Marker, Region } from 'react-native-maps';
+import * as Location from 'expo-location';
 
 
 export default function fieldDetails() {
@@ -16,28 +18,37 @@ export default function fieldDetails() {
     const { fieldName, fieldId } = useLocalSearchParams(); // Get query params
     const [fieldDetails, setFieldDetails] = useState<any>({}); // Field details
 
-    const [location, setLocation] = useState('');
     const [totalTrees, setTotalTrees] = useState('');
     const [size, setSize] = useState('');
-    const [indication, setIndication] = useState('');
-    const [waterPrice, setWaterPrice] = useState('');
     const [description, setDescription] = useState('');
+
+    const [mapLocation, setMapLocation] = useState<{ latitude: number; longitude: number }>({ latitude: 35.308010695609205, longitude: 25.082387924194336 }); 
+    const [region, setRegion] = useState<Region | undefined>(undefined);
 
     useEffect(() => {
         navigation.setOptions({title: fieldName,});
         fetchFieldDetails();
     }, []);
 
+    const handleMarkerDragEnd = (event: any) => {
+        const { latitude, longitude } = event.nativeEvent.coordinate;
+        setMapLocation({ latitude, longitude });
+    };
+
     const fetchFieldDetails = async () => {
         try {
             const field = await getField(fieldId);
             setFieldDetails(field[0]);
-            setLocation(field[0].location);
             setTotalTrees(field[0].total_trees);
             setSize(field[0].size);
-            setIndication(field[0].indication);
-            setWaterPrice(field[0].water_price);
             setDescription(field[0].description);
+            setMapLocation({ latitude: field[0].lat, longitude: field[0].lon });
+            setRegion({
+                latitude: field[0].lat,
+                longitude: field[0].lon,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+            });
         } catch (error) {
             Alert.alert('Σφάλμα', 'Πρόβλημα στην ανάκτηση των λεπτομερειών του χωραφιού');
         }
@@ -70,11 +81,6 @@ export default function fieldDetails() {
         }
     };
 
-    const handleLocationBlur = () => {
-        if (location === '')
-            setLocation(fieldDetails.location); // Revert to default if field is empty
-    }
-
     const handleTotalTreesBlur = () => {
         if (totalTrees === '')
             setTotalTrees(fieldDetails.total_trees); // Revert to default if field is empty
@@ -85,33 +91,26 @@ export default function fieldDetails() {
             setSize(fieldDetails.size); // Revert to default if field is empty
     }
 
-    const handleIndicationBlur = () => {
-        if (indication === '')
-            setIndication(fieldDetails.indication); // Revert to default if field is empty
-    }
-
-    const handleWaterPriceBlur = () => {
-        if (waterPrice === '')
-            setWaterPrice(fieldDetails.water_price); // Revert to default if field is empty
-    }
-
     const handleSubmit = () => {
-        updateField(parseInt(fieldDetails.field_id), location, parseInt(totalTrees), parseFloat(size), parseInt(indication), parseFloat(waterPrice), description);
+        updateField(parseInt(fieldDetails.field_id), mapLocation.latitude, mapLocation.longitude, parseInt(totalTrees), size, description);
         Alert.alert('Επιτυχής Αλλαγή!','Οι αλλαγές αποθηκεύτηκαν επιτυχώς');
         router.back();
     }
 
     return (
         <ScrollView>
-            <Text style={styles.label}>Περιοχή</Text>
-            <TextInput
-                placeholderTextColor="white"
-                style={styles.input}
-                value={location}
-                placeholder={fieldDetails.location}
-                onChangeText={setLocation}
-                onBlur={handleLocationBlur}
-            />
+            <Text style={styles.label}>Τοποθεσία</Text>
+            <View style={styles.mapContainer}>
+                <MapView
+                    style={styles.map}
+                    region={region}
+                    onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
+                    >
+                    {mapLocation && (
+                    <Marker coordinate={{ latitude: mapLocation.latitude, longitude: mapLocation.longitude }} draggable onDragEnd={handleMarkerDragEnd} />
+                    )}
+                </MapView>
+            </View>   
 
             <Text style={styles.label}>Αριθμός Δέντρων</Text>
             <TextInput
@@ -133,28 +132,6 @@ export default function fieldDetails() {
                 onChangeText={(val) => setSize(val.replace(/[^0-9.]/g, ''))}
                 keyboardType='numeric'
                 onBlur={handleSizeBlur}
-            />
-
-            <Text style={styles.label}>Ένδειξη Μετρητή Νερού</Text>
-            <TextInput
-                placeholderTextColor="white"
-                style={styles.input}
-                value={indication}
-                placeholder={fieldDetails.indication+''}
-                onChangeText={(val) => setIndication(val.replace(/[^0-9]/g, ''))}
-                keyboardType='numeric'
-                onBlur={handleIndicationBlur}
-            />
-
-            <Text style={styles.label}>Τιμή νερού ανα κυβικό</Text>
-            <TextInput
-                placeholderTextColor="white"
-                style={styles.input}
-                value={waterPrice}
-                placeholder={fieldDetails.water_price+''}
-                onChangeText={(val) => setWaterPrice(val.replace(/[^0-9.]/g, ''))}
-                keyboardType='numeric'
-                onBlur={handleWaterPriceBlur}
             />
 
             <Text style={styles.label}>Περιγραφή</Text>
@@ -182,6 +159,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+  },
+  mapContainer: { 
+    height: 250, 
+    borderRadius: 10, 
+    overflow: 'hidden',
+    marginVertical: 10, 
+  },
+  map: { 
+    flex: 1 
   },
   label: {
     fontSize: 16,
