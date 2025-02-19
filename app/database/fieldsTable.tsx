@@ -29,21 +29,6 @@ export const updateField = async (id: number, lat: number, lon: number, totalTre
     );
 }
 
-export const getWateringDetails = async (id: any) => {
-    const wateringDetails:any = await db.getAllAsync(`SELECT indication, water_price FROM fields WHERE field_id = ${id}`);
-    return wateringDetails;
-}
-
-export const updateIndication = async (id: number, indication: number) => {
-    await db.execAsync(
-        `
-        UPDATE fields
-        SET indication = ${indication}
-        WHERE field_id = ${id};
-        `
-    );
-}
-
 export const deleteField = async (id: any) => {
     await db.execAsync(
         `

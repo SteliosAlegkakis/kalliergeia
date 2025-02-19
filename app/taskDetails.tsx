@@ -63,8 +63,6 @@ const taskDetails = () => {
                     <Text style={styles.value}>{task.cost} €</Text>
                     <Text style={styles.label}>Κυβικά Νερού</Text>
                     <Text style={styles.value}>{task.cubic_meter} m³</Text>
-                    <Text style={styles.label}>Ένδειξη μετρητή νερού</Text>
-                    <Text style={styles.value}>{task.indication}</Text>
                 </>
             )}
             {type === 'fertilization' && (

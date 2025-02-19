@@ -26,7 +26,6 @@ export const setupDatabase = () => {
             field_id INTEGER NOT NULL,
             cost REAL NOT NULL,
             cubic_meter REAL NOT NULL,
-            indication INTEGER NOT NULL,
             date TEXT NOT NULL,
             comment TEXT
         );

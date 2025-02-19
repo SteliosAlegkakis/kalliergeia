@@ -8,8 +8,6 @@ import { addHarvest } from './database/harvestTable';
 import { addFertilization } from './database/fertilizationTable';
 import { addSpraying } from './database/sprayingTable';
 import { addWatering } from './database/wateringTable';
-import { getWateringDetails } from './database/fieldsTable';
-import { updateIndication } from './database/fieldsTable';
 
 export default function FormScreen() {
 
@@ -26,7 +24,7 @@ export default function FormScreen() {
   const [cost, setCost] = useState<any>();
   const [name, setName] = useState('');
 
-  const [indication, setIndication] = useState<any>();
+  const [cubic, setCubic] = useState<any>();
 
   const [sacks, setSacks] = useState<any>();
 
@@ -64,7 +62,7 @@ export default function FormScreen() {
     } else if (taskType === 'fertilization' || taskType === 'spraying') {
       if (!cost || !name) return false;
     } else if (taskType === 'watering') {
-      if (!indication) return false;
+      if (!cubic || !cost) return false;
     } else if (taskType === 'harvest') {
       if (!cost || !sacks) return false
     }
@@ -89,16 +87,7 @@ export default function FormScreen() {
   };
 
   const submitWatering = async () => {
-    const fieldDetails = await getWateringDetails(fieldId);
-    const oldIndication = fieldDetails[0].indication;
-    if(indication < oldIndication) {
-      Alert.alert('Σφάλμα', 'Η νέα τιμή του μετρητή πρέπει να είναι μεγαλύτερη από την προηγούμενη.\n\n Προηγούμενη τιμή: ' + oldIndication);
-      return;
-    }
-    const total_cm = indication - oldIndication;
-    const cost = total_cm * fieldDetails[0].water_price;
-    addWatering(parseInt(fieldId.toString()), cost, total_cm, indication, date.toLocaleDateString("el-GR"), description);
-    updateIndication(parseInt(fieldId.toString()), parseInt(indication));
+    addWatering(parseInt(fieldId.toString()), cost, cubic, date.toLocaleDateString("el-GR"), description);
     Alert.alert('Επιτυχία', 'Η εργασία καταχωρήθηκε με επιτυχία');
     router.back();
   };
@@ -201,14 +190,21 @@ export default function FormScreen() {
         </>)}
 
         { taskType === 'watering' && (<>
-          <Text style={styles.label}>Ένδειξη μετρητή *</Text>
+          <Text style={styles.label}>Κυβικά Νερού *</Text>
           <TextInput 
             style={styles.input} 
             keyboardType="numeric"
-            value={indication}
-            onChangeText={text => setIndication(parseInt(text))}
+            value={cubic}
+            onChangeText={text => setCubic(parseFloat(text))}
           />
-          <Text style={styles.label}>Το κόστος του ποτίσματος υπολογίζεται με βάση την τιμη ανα κυβικό που έχει καταχωρηθεί για το εκάστοτε χωράφι. </Text>
+
+          <Text style={styles.label}>Κόστος (€) *</Text>
+          <TextInput 
+            style={styles.input} 
+            keyboardType="numeric"
+            value={cost}
+            onChangeText={text => setCost(parseFloat(text))}
+          />
         </>)}
 
         { taskType === 'harvest' && (<>
