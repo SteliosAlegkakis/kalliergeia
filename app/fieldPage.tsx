@@ -12,11 +12,12 @@ import { getWatering, getWateringCost } from "./database/wateringTable";
 import React from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getGrinding, getMedianOxide, getTotalOil } from "./database/grindingTable";
-import { getHarvest, getHarvestCost } from "./database/harvestTable";
+import { getHarvest, getHarvestCost, getTotalSacks } from "./database/harvestTable";
 import { getFertilization, getFertilizationCost } from "./database/fertilizationTable";
 import { getSpraying, getSprayingCost } from "./database/sprayingTable";
 import { PieChart } from "react-native-chart-kit";
 import { getOther, getOtherCost } from "./database/otherTable";
+import { getTotalTrees } from "./database/fieldsTable";
 
 export default function fieldPage() {
 
@@ -41,10 +42,12 @@ export default function fieldPage() {
     const [harvestCost, setHarvestCost] = useState(0);
     const [sprayCost, setSprayCost] = useState(0);
     const [otherCost, setOtherCost] = useState(0);
-    const [totalCost, setTotalCost] = useState();
+    const [totalCost, setTotalCost] = useState(0);
 
     const [oil, setOil] = useState(0);
     const [oxide, setOxide] = useState("-");
+    const [sacksPerTree, setSacksPerTree] = useState('0');
+    const [costPerKg, setCostPerKg] = useState('-');
 
     useEffect(() => {
         navigation.setOptions(
@@ -91,6 +94,14 @@ export default function fieldPage() {
         if(oxide[0].medianOxide === "-") setOxide("-");
         const oil:any = await getTotalOil(fieldId);
         setOil(oil[0].totalOil);
+        const harvest:any = await getTotalSacks(fieldId);
+        const sacks = harvest[0].totalSacks;
+        const trees: any = await getTotalTrees(fieldId);
+        const totalTrees = trees[0].total_trees;
+        const sacksPerTree = sacks/totalTrees;
+        setSacksPerTree(sacksPerTree.toFixed(1));
+        if(oil === 0) setCostPerKg('-');
+        else setCostPerKg((totalCost/oil[0].totalOil).toFixed(2)+ " €");
     }
 
     useFocusEffect(
@@ -170,14 +181,26 @@ export default function fieldPage() {
                     <View style={styles.row}>
                         <Text style={styles.title}>Παραγωγή</Text>
                     </View>
-                    <View style={[styles.row, {width: '60%'}, {marginTop: 10}]}>
-                        <View style={styles.column}>
-                        <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{oil} kg</Text>
-                        <Text style={[styles.title, {color: "#AFAFAF"}]}>Ελαιόλαδο</Text>
+                    <View style={styles.row}>
+                        <View style={[styles.column, {width: '50%'}, {marginTop: 10}]}>
+                            <View style={styles.column}>
+                                <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{oil} kg</Text>
+                                <Text style={[styles.title, {color: "#AFAFAF"}]}>Ελαιόλαδο</Text>
+                            </View>
+                            <View style={[styles.column, {marginTop: 10}]}>
+                                <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{oxide}</Text>
+                                <Text style={[styles.title, {color: "#AFAFAF"}]}>Μέση οξύτητα</Text>
+                            </View>
                         </View>
-                        <View style={styles.column}>
-                            <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{oxide}</Text>
-                            <Text style={[styles.title, {color: "#AFAFAF"}]}>Μέση οξύτητα</Text>
+                        <View style={[styles.column, {width: '50%'}, {marginTop: 10}]}>
+                            <View style={styles.column}>
+                                <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{costPerKg}</Text>
+                                <Text style={[styles.title, {color: "#AFAFAF"}]}>Κόστος/Κιλό</Text>
+                            </View>
+                            <View style={[styles.column, {marginTop: 10}]}>
+                                <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{sacksPerTree}</Text>
+                                <Text style={[styles.title, {color: "#AFAFAF"}]}>Τσουβάλια/Δέντρο</Text>
+                            </View>
                         </View>
                     </View>
                 </View>
