@@ -9,8 +9,9 @@ import { getWateringCostTotal } from '../database/wateringTable';
 import { getFertilizationCostTotal } from '../database/fertilizationTable';
 import { getSprayingCostTotal } from '../database/sprayingTable';
 import { getHarvestCostTotal } from '../database/harvestTable';
+import { getTotal } from '../database/grindingTable';
 import { router, useFocusEffect } from 'expo-router';
-import { getOil, getSales, getTotalIncome } from '../database/saleTable';
+import { getSales, getTotalIncome } from '../database/saleTable';
 import Sale from '@/components/Sale';
 import { getOtherCostTotal } from '../database/otherTable';
 
@@ -25,6 +26,9 @@ export default function TabTwoScreen() {
 
   const [income, setIncome] = useState(0);
   const [oil, setOil] = useState(0);
+  const [costPerKg, setCostPerKg] = useState('-');
+  const [profit, setProfit] = useState(0);
+
   const [sales, setSales] = useState<any>([]);
   
 
@@ -46,10 +50,16 @@ export default function TabTwoScreen() {
   const fetchProduction = async () => {
     const totalIncome: any = await getTotalIncome();
     setIncome(totalIncome[0].totalIncome);
-    const oil: any = await getOil();
+    const oil: any = await getTotal();
     setOil(oil[0].totalOil);
     const sales:any = await getSales();
     setSales(sales);
+    const profit = totalIncome[0].totalIncome - totalCost;
+    if(profit > 0) setProfit(profit);
+    else setProfit(0);
+    const costPerKg = totalCost / oil[0].totalOil;
+    if(oil[0].totalOil > 0) setCostPerKg(costPerKg.toFixed(2) + ' €');
+    else setCostPerKg('-');
   }
 
   useEffect(() => {
@@ -131,16 +141,28 @@ export default function TabTwoScreen() {
           absolute
         />
         <View style={styles.row}>
-        <Text style={[styles.title, {marginTop: 10, marginBottom: 10}]}>Παραγωγή</Text>
+          <Text style={[styles.title, {marginTop: 10, marginBottom: 10}]}>Παραγωγή</Text>
         </View>
-        <View style={[styles.row, {width: '60%'}, {marginTop: 10}]}>
-          <View style={styles.column}>
-            <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{income} €</Text>
-            <Text style={[styles.title, {color: "#AFAFAF"}]}>'Εσοδα</Text>
+        <View style={styles.row}>
+          <View style={[styles.column, {width: '50%'}, {marginTop: 10}]}>
+            <View style={styles.column}>
+              <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{income} €</Text>
+              <Text style={[styles.title, {color: "#AFAFAF"}]}>'Εσοδα</Text>
+            </View>
+            <View style={[styles.column, {marginTop: 10}]}>
+              <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{oil} kg</Text>
+              <Text style={[styles.title, {color: "#AFAFAF"}]}>Ελαιόλαδο</Text>
+            </View>
           </View>
-          <View style={styles.column}>
-            <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{oil} kg</Text>
-            <Text style={[styles.title, {color: "#AFAFAF"}]}>Ελαιόλαδο</Text>
+          <View style={[styles.column, {width: '50%'}, {marginTop: 10}]}>
+            <View style={styles.column}>
+              <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{profit} €</Text>
+              <Text style={[styles.title, {color: "#AFAFAF"}]}>Κέρδος</Text>
+            </View>
+            <View style={[styles.column, {marginTop: 10}]}>
+              <Text style={[{fontSize: 20, fontWeight: 'bold', color: '#fff'}]}>{costPerKg}</Text>
+              <Text style={[styles.title, {color: "#AFAFAF"}]}>Κόστος/Κιλό</Text>
+            </View>
           </View>
         </View>
       </View>

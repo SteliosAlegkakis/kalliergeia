@@ -100,7 +100,7 @@ export default function fieldPage() {
         const totalTrees = trees[0].total_trees;
         const sacksPerTree = sacks/totalTrees;
         setSacksPerTree(sacksPerTree.toFixed(1));
-        if(oil === 0) setCostPerKg('-');
+        if(oil[0].totalOil === 0) setCostPerKg('-');
         else setCostPerKg((totalCost/oil[0].totalOil).toFixed(2)+ " €");
     }
 

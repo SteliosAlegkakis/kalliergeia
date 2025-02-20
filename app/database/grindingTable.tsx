@@ -36,6 +36,15 @@ export const getTotalOil = async (field_id: any) => {
     return grinding;
 }
 
+export const getTotal = async () => {
+    const grinding = await db.getAllAsync(
+        `
+        SELECT COALESCE(SUM(oil_kg), 0) as totalOil FROM grinding;
+        `
+    );
+    return grinding;
+}
+
 export const deleteGrinding = async (task_id: number) => {
     await db.execAsync(
         `
