@@ -9,6 +9,7 @@ import { addFertilization } from './database/fertilizationTable';
 import { addSpraying } from './database/sprayingTable';
 import { addWatering } from './database/wateringTable';
 import { addOther } from './database/otherTable';
+import { addYear } from './utilities/storage';
 
 export default function FormScreen() {
 
@@ -113,6 +114,7 @@ export default function FormScreen() {
   const handleSubmit = () => {
     if (!validateForm()) Alert.alert('Προσοχη!', 'Συμπληρώστε σωστά τα υποχρεωτικά πεδία');
     else {
+      addYear(date.getFullYear());
       if(taskType === 'grinding') submitGrinding();
       else if(taskType === 'fertilization') submitFertilization();
       else if(taskType === 'spraying') submitSpraying();

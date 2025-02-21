@@ -1,9 +1,9 @@
 import { StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { PieChart } from 'react-native-chart-kit';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import RoundButton from '@/components/RoundButton';
 import { getWateringCostTotal } from '../database/wateringTable';
 import { getFertilizationCostTotal } from '../database/fertilizationTable';
@@ -14,6 +14,8 @@ import { router, useFocusEffect } from 'expo-router';
 import { getSales, getTotalIncome } from '../database/saleTable';
 import Sale from '@/components/Sale';
 import { getOtherCostTotal } from '../database/otherTable';
+import { getStoredYears, addYear} from '../utilities/storage';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 export default function TabTwoScreen() {
 
@@ -31,6 +33,9 @@ export default function TabTwoScreen() {
 
   const [sales, setSales] = useState<any>([]);
   
+  const [years, setYears] = useState<any>([]);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [openYear, setOpenYear] = useState(false);
 
   const fetchCosts = async () => {
     const wateringCost: any = await getWateringCostTotal();
@@ -62,14 +67,22 @@ export default function TabTwoScreen() {
     else setCostPerKg('-');
   }
 
+  const loadYears = async () => {
+    addYear(new Date().getFullYear());
+    const years = await getStoredYears();
+    setYears(years);
+  }
+
   useEffect(() => {
     fetchCosts();
     fetchProduction();
+    loadYears();
   }, []);
 
   useFocusEffect(() => {
     fetchCosts();
     fetchProduction();
+    loadYears();
   });
 
 
@@ -77,11 +90,20 @@ export default function TabTwoScreen() {
     <SafeAreaView style={{ flex: 1 ,alignItems: 'center'}}>
       <View style={styles.container}>
         <View style={styles.row}>
-          <Text style={styles.title}>Έξοδα</Text>
-          <TouchableOpacity style={styles.button} onPress={() => {}}>
-            <Text style={styles.title}>2025</Text>
-            <AntDesign name="down" size={16} color='#fff' />
-          </TouchableOpacity>
+          <Text style={[styles.title, {marginRight: '58%'}]}>Έξοδα</Text>
+          <DropDownPicker style={[{maxWidth: '30%'}, {padding: 0}, {backgroundColor: 'black'}]}  
+              open={openYear}
+              value={selectedYear}
+              items={years}
+              setOpen={setOpenYear}
+              setValue={(value => {setSelectedYear(value);})}
+              setItems={setYears}
+              placeholderStyle={[{ color: '#fff' }, { fontWeight: 'bold' }]}
+              textStyle={[{ color: '#fff' }, { fontWeight: 'bold' }]}
+              dropDownContainerStyle={{backgroundColor: 'black'}}
+              arrowIconStyle = {{tintColor: 'white'}}
+              ickIconStyle = {{tintColor: 'white'}}
+            />
         </View>
         <View style={styles.column}>
           <Text style={[{fontSize: 20},{color: '#fff'}, {fontWeight: 'bold'}, {marginBottom: 5}]}>
@@ -96,41 +118,41 @@ export default function TabTwoScreen() {
               name: "€ Πότισμα",
               cost: watering,
               color: "rgba(131, 167, 234, 1)",
-              legendFontColor: "#7F7F7F",
+              legendFontColor: "white",
               legendFontSize: 15
             },
             {
               name: "€ Λίπασμα",
               cost: fertilization,
               color: "rgb(171, 190, 46)",
-              legendFontColor: "#7F7F7F",
+              legendFontColor: "white",
               legendFontSize: 15
             },
             {
               name: "€ Ψέκασμα",
               cost: spraying,
               color: "rgba(123, 31, 162, 1)",
-              legendFontColor: "#7F7F7F",
+              legendFontColor: "white",
               legendFontSize: 15
             },
             {
               name: "€ Συγκομιδή",
               cost: harvest,
               color: "rgba(58, 131, 121, 1)",
-              legendFontColor: "#7F7F7F",
+              legendFontColor: "white",
               legendFontSize: 15
             },
             {
               name: "€ Άλλo",
               cost: other,
               color: "rgb(205, 149, 61)",
-              legendFontColor: "#7F7F7F",
+              legendFontColor: "white",
               legendFontSize: 15
             },
           ]}
           
           width={350}
-          height={200}
+          height={150}
           chartConfig={{
             decimalPlaces: 2,
             color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
@@ -175,7 +197,7 @@ export default function TabTwoScreen() {
       
       <ScrollView>
         {sales.length === 0 ? (
-          <Text style={[styles.title, {color: '#fff'}, {marginTop: "30%"}]}>Δεν υπάρχουν καταχωρημένες πωλήσεις</Text>
+          <Text style={[styles.title, {color: '#fff'}, {marginTop: "10%"}]}>Δεν υπάρχουν καταχωρημένες πωλήσεις</Text>
         ) : (
           sales.map((sale:any, index:any) => (
               <Sale key={index} sale={sale} />

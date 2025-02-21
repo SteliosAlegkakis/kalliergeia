@@ -18,6 +18,8 @@ import { getSpraying, getSprayingCost } from "./database/sprayingTable";
 import { PieChart } from "react-native-chart-kit";
 import { getOther, getOtherCost } from "./database/otherTable";
 import { getTotalTrees } from "./database/fieldsTable";
+import { getStoredYears, addYear} from './utilities/storage';
+
 
 export default function fieldPage() {
 
@@ -49,6 +51,10 @@ export default function fieldPage() {
     const [sacksPerTree, setSacksPerTree] = useState('0');
     const [costPerKg, setCostPerKg] = useState('-');
 
+    const [years, setYears] = useState<any>([]);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [openYear, setOpenYear] = useState(false);
+
     useEffect(() => {
         navigation.setOptions(
             {title: fieldName,}
@@ -56,7 +62,8 @@ export default function fieldPage() {
         fetchTasks();
         fetchCosts();
         fetchProduce();
-    }, [taskType]);
+        loadYears();
+    }, [taskType, selectedYear]);
 
     const fetchTasks = async () => {
         try {
@@ -104,12 +111,19 @@ export default function fieldPage() {
         else setCostPerKg((totalCost/oil[0].totalOil).toFixed(2)+ " €");
     }
 
+    const loadYears = async () => {
+        addYear(new Date().getFullYear());
+        const years = await getStoredYears();
+        setYears(years);
+    }
+
     useFocusEffect(
         React.useCallback(() => {
           setTaskType('grinding');
           fetchTasks();
           fetchCosts();
           fetchProduce();
+          loadYears();
         }, [])
     );
 
@@ -117,11 +131,20 @@ export default function fieldPage() {
         <SafeAreaView style={{ flex: 1 ,alignItems: 'center'}}>
                 <View style={styles.container}>
                     <View style={styles.row}>
-                        <Text style={styles.title}>Έξοδα</Text>
-                        <TouchableOpacity style={styles.button} onPress={() => {}}>
-                            <Text style={styles.title}>2025</Text>
-                            <AntDesign name="down" size={16} color='#fff' />
-                        </TouchableOpacity>
+                        <Text style={[styles.title, {marginRight: '58%'}]}>Έξοδα</Text>
+                        <DropDownPicker style={[{maxWidth: '30%'}, {padding: 0}, {backgroundColor: 'black'}]}  
+                            open={openYear}
+                            value={selectedYear}
+                            items={years}
+                            setOpen={setOpenYear}
+                            setValue={(value => {setSelectedYear(value);})}
+                            setItems={setYears}
+                            placeholderStyle={[{ color: '#fff' }, { fontWeight: 'bold' }]}
+                            textStyle={[{ color: '#fff' }, { fontWeight: 'bold' }]}
+                            dropDownContainerStyle={{backgroundColor: 'black'}}
+                            arrowIconStyle = {{tintColor: 'white'}}
+                            tickIconStyle = {{tintColor: 'white'}}
+                        />
                     </View>
                     <View style={styles.column}>
                         <Text style={[{fontSize: 20},{color: '#fff'}, {fontWeight: 'bold'}, {marginBottom: 5}]}>
@@ -168,7 +191,7 @@ export default function fieldPage() {
                             },
                         ]}
                         width={350}
-                        height={200}
+                        height={150}
                         chartConfig={{
                             decimalPlaces: 2,
                             color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
@@ -224,7 +247,7 @@ export default function fieldPage() {
 
                 <ScrollView style={[]}>
                 {tasks.length === 0 ? (
-                    <Text style={[styles.title, {marginTop: "30%"}]}>Δεν υπάρχουν καταχωρημένες εργασίες</Text>
+                    <Text style={[styles.title, {marginTop: "10%"}]}>Δεν υπάρχουν καταχωρημένες εργασίες</Text>
                 ) : (
                     tasks.map((task:any, index:any) => (
                         <Task key={index} type={taskType} task={task} />
