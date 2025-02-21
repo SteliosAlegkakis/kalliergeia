@@ -119,11 +119,10 @@ export default function fieldPage() {
 
     useFocusEffect(
         React.useCallback(() => {
-          setTaskType('grinding');
           fetchData();
           fetchTasks();
           loadYears();
-        }, [selectedYear])
+        }, [taskType, selectedYear])
     );
 
     return (
