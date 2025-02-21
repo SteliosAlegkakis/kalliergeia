@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { SetStateAction, useEffect, useState } from "react";
-import { TouchableOpacity, View, Text, Alert, ScrollView, TextInput, StyleSheet, Pressable } from "react-native";
+import { TouchableOpacity, View, Text, Alert, ScrollView, TextInput, StyleSheet, Pressable, Linking } from "react-native";
 import { deleteField, getField, updateField } from "./database/fieldsTable";
 import { deleteGrindingByField } from "./database/grindingTable";
 import { deleteFertilizationByField } from "./database/fertilizationTable";
@@ -8,8 +8,6 @@ import { deleteWateringByField } from "./database/wateringTable";
 import { deleteHarvestByField } from "./database/harvestTable";
 import { deleteSprayingByField } from "./database/sprayingTable";
 import MapView, { Marker, Region } from 'react-native-maps';
-import * as Location from 'expo-location';
-
 
 export default function fieldDetails() {
 
@@ -110,6 +108,9 @@ export default function fieldDetails() {
                     <Marker coordinate={{ latitude: mapLocation.latitude, longitude: mapLocation.longitude }} draggable onDragEnd={handleMarkerDragEnd} />
                     )}
                 </MapView>
+                <TouchableOpacity onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${mapLocation.latitude},${mapLocation.longitude}`)}>
+                    <Text style={styles.underlineText}>Προβολή στους χάρτες Google</Text>
+                </TouchableOpacity>
             </View>   
 
             <Text style={styles.label}>Αριθμός Δέντρων</Text>
