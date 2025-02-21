@@ -3,7 +3,6 @@ import { useRouter, useNavigation, useLocalSearchParams, Link, useFocusEffect } 
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import RoundButton from "@/components/RoundButton";
@@ -55,60 +54,52 @@ export default function fieldPage() {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [openYear, setOpenYear] = useState(false);
 
-    useEffect(() => {
-        navigation.setOptions(
-            {title: fieldName,}
-        );
-        fetchTasks();
-        fetchCosts();
-        fetchProduce();
-        loadYears();
-    }, [taskType, selectedYear]);
-
     const fetchTasks = async () => {
         try {
-            let tasks:any;
-            if(taskType === 'grinding') tasks = await getGrinding(fieldId);
-            if(taskType === 'watering') tasks = await getWatering(fieldId);
-            if(taskType === 'harvest') tasks = await getHarvest(fieldId);
-            if(taskType === 'fertilization') tasks = await getFertilization(fieldId);
-            if(taskType === 'spraying') tasks = await getSpraying(fieldId);
-            if(taskType === 'other') tasks = await getOther(fieldId);
+            let tasks: any;
+            if(taskType === 'grinding') tasks = await getGrinding(fieldId, selectedYear);
+            if(taskType === 'watering') tasks = await getWatering(fieldId, selectedYear);
+            if(taskType === 'harvest') tasks = await getHarvest(fieldId, selectedYear);
+            if(taskType === 'fertilization') tasks = await getFertilization(fieldId, selectedYear);
+            if(taskType === 'spraying') tasks = await getSpraying(fieldId, selectedYear);
+            if(taskType === 'other') tasks = await getOther(fieldId, selectedYear);
             setTasks(tasks);
         } catch (error) {
             alert("Error fetching tasks");
         }
     }
 
-    const fetchCosts = async () => {
-        const waterCost:any = await getWateringCost(fieldId);
+    const fetchData = async () => {
+        const waterCost:any = await getWateringCost(fieldId, selectedYear);
         setWaterCost(waterCost[0].totalCost);
-        const fertilCost:any = await getFertilizationCost(fieldId);
+        const fertilCost:any = await getFertilizationCost(fieldId, selectedYear);
         setFertilCost(fertilCost[0].totalCost);
-        const harvestCost:any = await getHarvestCost(fieldId);
+        const harvestCost:any = await getHarvestCost(fieldId, selectedYear);
         setHarvestCost(harvestCost[0].totalCost);
-        const sprayCost:any = await getSprayingCost(fieldId);
+        const sprayCost:any = await getSprayingCost(fieldId, selectedYear);
         setSprayCost(sprayCost[0].totalCost);
-        const otherCost:any = await getOtherCost(fieldId);
+        const otherCost:any = await getOtherCost(fieldId, selectedYear);
         setOtherCost(otherCost[0].totalCost);
-        setTotalCost(waterCost[0].totalCost + fertilCost[0].totalCost + harvestCost[0].totalCost + sprayCost[0].totalCost + otherCost[0].totalCost);
-    }
+        const totalCost = waterCost[0].totalCost + fertilCost[0].totalCost + harvestCost[0].totalCost + sprayCost[0].totalCost + otherCost[0].totalCost;
+        setTotalCost(totalCost);
 
-    const fetchProduce = async () => {
-        const oxide:any = await getMedianOxide(fieldId);
+        const oxide:any = await getMedianOxide(fieldId, selectedYear);
         const roundOxide = parseFloat(oxide[0].medianOxide).toFixed(1);
         setOxide(roundOxide+" %");
         if(oxide[0].medianOxide === "-") setOxide("-");
-        const oil:any = await getTotalOil(fieldId);
+        const oil:any = await getTotalOil(fieldId, selectedYear);
         setOil(oil[0].totalOil);
-        const harvest:any = await getTotalSacks(fieldId);
+        const harvest:any = await getTotalSacks(fieldId, selectedYear);
         const sacks = harvest[0].totalSacks;
         const trees: any = await getTotalTrees(fieldId);
         const totalTrees = trees[0].total_trees;
         const sacksPerTree = sacks/totalTrees;
         setSacksPerTree(sacksPerTree.toFixed(1));
-        if(oil[0].totalOil === 0) setCostPerKg('-');
-        else setCostPerKg((totalCost/oil[0].totalOil).toFixed(2)+ " €");
+
+        const costPerKg = totalCost/oil[0].totalOil;
+        if(oil[0].totalOil > 0) setCostPerKg(costPerKg.toFixed(2)+ " €");
+        else setCostPerKg('-');
+
     }
 
     const loadYears = async () => {
@@ -117,14 +108,22 @@ export default function fieldPage() {
         setYears(years);
     }
 
+    useEffect(() => {
+        navigation.setOptions(
+            {title: fieldName,}
+        );
+        fetchData();
+        fetchTasks();
+        loadYears();
+    }, [taskType, selectedYear]);
+
     useFocusEffect(
         React.useCallback(() => {
           setTaskType('grinding');
+          fetchData();
           fetchTasks();
-          fetchCosts();
-          fetchProduce();
           loadYears();
-        }, [])
+        }, [selectedYear])
     );
 
     return (

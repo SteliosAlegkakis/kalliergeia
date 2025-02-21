@@ -16,6 +16,7 @@ import Sale from '@/components/Sale';
 import { getOtherCostTotal } from '../database/otherTable';
 import { getStoredYears, addYear} from '../utilities/storage';
 import DropDownPicker from 'react-native-dropdown-picker';
+import React from 'react';
 
 export default function TabTwoScreen() {
 
@@ -37,12 +38,12 @@ export default function TabTwoScreen() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [openYear, setOpenYear] = useState(false);
 
-  const fetchCosts = async () => {
-    const wateringCost: any = await getWateringCostTotal();
-    const fertilizationCost: any = await getFertilizationCostTotal();
-    const sprayingCost: any = await getSprayingCostTotal();
-    const harvestCost: any = await getHarvestCostTotal();
-    const otherCost: any = await getOtherCostTotal();
+  const fetchData = async () => {
+    const wateringCost: any = await getWateringCostTotal(selectedYear);
+    const fertilizationCost: any = await getFertilizationCostTotal(selectedYear);
+    const sprayingCost: any = await getSprayingCostTotal(selectedYear);
+    const harvestCost: any = await getHarvestCostTotal(selectedYear);
+    const otherCost: any = await getOtherCostTotal(selectedYear);
     setWatering(wateringCost[0].totalCost);
     setFertilization(fertilizationCost[0].totalCost);
     setSpraying(sprayingCost[0].totalCost);
@@ -50,19 +51,17 @@ export default function TabTwoScreen() {
     setOther(otherCost[0].totalCost);
     const total = wateringCost[0].totalCost + fertilizationCost[0].totalCost + sprayingCost[0].totalCost + harvestCost[0].totalCost + otherCost[0].totalCost;
     setTotalCost(total);
-  }
 
-  const fetchProduction = async () => {
-    const totalIncome: any = await getTotalIncome();
+    const totalIncome: any = await getTotalIncome(selectedYear);
     setIncome(totalIncome[0].totalIncome);
-    const oil: any = await getTotal();
+    const oil: any = await getTotal(selectedYear);
     setOil(oil[0].totalOil);
-    const sales:any = await getSales();
+    const sales:any = await getSales(selectedYear);
     setSales(sales);
-    const profit = totalIncome[0].totalIncome - totalCost;
+    const profit = totalIncome[0].totalIncome - total;
     if(profit > 0) setProfit(profit);
     else setProfit(0);
-    const costPerKg = totalCost / oil[0].totalOil;
+    const costPerKg = total / oil[0].totalOil;
     if(oil[0].totalOil > 0) setCostPerKg(costPerKg.toFixed(2) + ' €');
     else setCostPerKg('-');
   }
@@ -74,16 +73,16 @@ export default function TabTwoScreen() {
   }
 
   useEffect(() => {
-    fetchCosts();
-    fetchProduction();
+    fetchData();
     loadYears();
-  }, []);
+  }, [selectedYear]);
 
-  useFocusEffect(() => {
-    fetchCosts();
-    fetchProduction();
-    loadYears();
-  });
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+      loadYears();
+    }, [selectedYear])
+  );
 
 
   return (

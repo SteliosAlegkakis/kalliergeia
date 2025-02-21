@@ -39,7 +39,7 @@ export default function incomeForm() {
   const handleSubmit = () => {
     if (!validateForm()) Alert.alert('Προσοχη!', 'Συμπληρώστε τα υποχρεωτικά πεδία');
     else {
-      addSale(parseFloat(oil), parseFloat(pricePerKilo), parseFloat(total), date.toLocaleDateString('el-GR'), description);
+      addSale(parseFloat(oil), parseFloat(pricePerKilo), parseFloat(total), date.toLocaleDateString('el-GR'), date.getFullYear(), description);
       Alert.alert('Επιτυχής Προσθήκη', 'Η πώληση προστέθηκε επιτυχώς');
       router.back();
     }

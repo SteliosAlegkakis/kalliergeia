@@ -18,7 +18,7 @@ export const setupDatabase = () => {
         );
         `
     );
-
+    
     db.execSync(
         `
         CREATE TABLE IF NOT EXISTS watering (
@@ -27,11 +27,12 @@ export const setupDatabase = () => {
             cost REAL NOT NULL,
             cubic_meter REAL NOT NULL,
             date TEXT NOT NULL,
+            year INTEGER NOT NULL,
             comment TEXT
         );
         `
     );
-
+    
     db.execSync(
         `
         CREATE TABLE IF NOT EXISTS fertilization (
@@ -40,11 +41,12 @@ export const setupDatabase = () => {
             cost REAL NOT NULL,
             name TEXT NOT NULL,
             date TEXT NOT NULL,
+            year INTEGER NOT NULL,
             comment TEXT
         );
         `
     );
-
+    
     db.execSync(
         `
         CREATE TABLE IF NOT EXISTS spraying (
@@ -53,11 +55,12 @@ export const setupDatabase = () => {
             cost REAL NOT NULL,
             name TEXT NOT NULL,
             date TEXT NOT NULL,
+            year INTEGER NOT NULL,
             comment TEXT
         );
         `
     );
-
+    
     db.execSync(
         `
         CREATE TABLE IF NOT EXISTS grinding (
@@ -67,11 +70,12 @@ export const setupDatabase = () => {
             oil_kg REAL NOT NULL,
             oxide REAL NOT NULL,
             date TEXT NOT NULL,
+            year INTEGER NOT NULL,
             comment TEXT
         );
         `
     );
-
+    
     db.execSync(
         `
         CREATE TABLE IF NOT EXISTS harvest (
@@ -80,11 +84,12 @@ export const setupDatabase = () => {
             cost REAL NOT NULL,
             sacks INTEGER NOT NULL,
             date TEXT NOT NULL,
+            year INTEGER NOT NULL,
             comment TEXT
         );
         `
     );
-
+    
     db.execSync(
         `
         CREATE TABLE IF NOT EXISTS other (
@@ -93,6 +98,7 @@ export const setupDatabase = () => {
             task_name TEXT NOT NULL,
             cost REAL NOT NULL,
             date TEXT NOT NULL,
+            year INTEGER NOT NULL,
             comment TEXT
         );
         `
@@ -106,6 +112,7 @@ export const setupDatabase = () => {
             price_per_kilo REAL NOT NULL,
             total REAL NOT NULL,
             date TEXT NOT NULL,
+            year INTEGER NOT NULL,
             comment TEXT
         );
         `

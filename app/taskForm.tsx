@@ -77,36 +77,36 @@ export default function FormScreen() {
   };
 
   const submitGrinding = () => {
-    addGrinding(parseInt(fieldId.toString()), oliveQuantity, oilQuantity, oxide, date.toLocaleDateString("el-GR"), description);
+    addGrinding(parseInt(fieldId.toString()), oliveQuantity, oilQuantity, oxide, date.toLocaleDateString("el-GR"), date.getFullYear(), description);
     Alert.alert('Επιτυχία', 'Η εργασία καταχωρήθηκε με επιτυχία');
     router.back();
   };
 
   const submitFertilization = () => {
-    addFertilization(parseInt(fieldId.toString()), cost, name, date.toLocaleDateString("el-GR"), description);
+    addFertilization(parseInt(fieldId.toString()), cost, name, date.toLocaleDateString("el-GR"), date.getFullYear(), description);
     router.back();
   };
 
   const submitSpraying = () => {
-    addSpraying(parseInt(fieldId.toString()), cost, name, date.toLocaleDateString("el-GR"), description);
+    addSpraying(parseInt(fieldId.toString()), cost, name, date.toLocaleDateString("el-GR"), date.getFullYear(), description);
     Alert.alert('Επιτυχία', 'Η εργασία καταχωρήθηκε με επιτυχία');
     router.back();
   };
 
   const submitWatering = async () => {
-    addWatering(parseInt(fieldId.toString()), cost, cubic, date.toLocaleDateString("el-GR"), description);
+    addWatering(parseInt(fieldId.toString()), cost, cubic, date.toLocaleDateString("el-GR"), date.getFullYear(), description);
     Alert.alert('Επιτυχία', 'Η εργασία καταχωρήθηκε με επιτυχία');
     router.back();
   };
 
   const submitHarvest = () => {
-    addHarvest(parseInt(fieldId.toString()), cost, sacks, date.toLocaleDateString("el-GR"), description);
+    addHarvest(parseInt(fieldId.toString()), cost, sacks, date.toLocaleDateString("el-GR"), date.getFullYear(), description);
     Alert.alert('Επιτυχία', 'Η εργασία καταχωρήθηκε με επιτυχία');
     router.back();
   };
 
   const submitOther = () => {
-    addOther(parseInt(fieldId.toString()), cost, task_name, date.toLocaleDateString("el-GR"), description);
+    addOther(parseInt(fieldId.toString()), cost, task_name, date.toLocaleDateString("el-GR"), date.getFullYear(), description);
     Alert.alert('Επιτυχία', 'Η εργασία καταχωρήθηκε με επιτυχία');
     router.back();
   }

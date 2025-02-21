@@ -1,36 +1,36 @@
 import db from './db';
 
-export const addFertilization = async (field_id: number, cost: number, name: string, date: string, comment: string) => {
+export const addFertilization = async (field_id: number, cost: number, name: string, date: string, year: number, comment: string) => {
     await db.execAsync(
         `
-        INSERT INTO fertilization (field_id, cost, name, date, comment)
-        VALUES (${field_id}, ${cost}, '${name}', '${date}', '${comment}');
+        INSERT INTO fertilization (field_id, cost, name, date, year, comment)
+        VALUES (${field_id}, ${cost}, '${name}', '${date}', ${year}, '${comment}');
         `
     );
 }
 
-export const getFertilization = async (field_id: any) => {
+export const getFertilization = async (field_id: any, year: number) => {
     const fertilization = await db.getAllAsync(
         `
-        SELECT * FROM fertilization WHERE field_id = ${field_id};
-        `
-    );
-    return fertilization;
-}
-
-export const getFertilizationCost = async (field_id: any) => {
-    const fertilization = await db.getAllAsync(
-        `
-        SELECT IFNULL(SUM(cost), 0) as totalCost FROM fertilization WHERE field_id = ${field_id};
+        SELECT * FROM fertilization WHERE field_id = ${field_id} AND year = ${year};
         `
     );
     return fertilization;
 }
 
-export const getFertilizationCostTotal = async () => {
+export const getFertilizationCost = async (field_id: any, year: number) => {
     const fertilization = await db.getAllAsync(
         `
-        SELECT IFNULL(SUM(cost), 0) as totalCost FROM fertilization;
+        SELECT IFNULL(SUM(cost), 0) as totalCost FROM fertilization WHERE field_id = ${field_id} AND year = ${year};
+        `
+    );
+    return fertilization;
+}
+
+export const getFertilizationCostTotal = async (year: number) => {
+    const fertilization = await db.getAllAsync(
+        `
+        SELECT IFNULL(SUM(cost), 0) as totalCost FROM fertilization WHERE year = ${year};
         `
     );
     return fertilization;
