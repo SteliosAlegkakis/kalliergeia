@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, Touchable, TouchableOpacity, View } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StyleSheet } from 'react-native';
@@ -7,17 +7,18 @@ import { StyleSheet } from 'react-native';
 interface SettingProps {
     name: string;
     icon: any;
+    action?: () => void;
 }
 
-const Setting: React.FC<SettingProps> = ({ name, icon }) => {
+const Setting: React.FC<SettingProps> = ({ name, icon, action }) => {
     return (
-        <View style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={action}>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
                 <MaterialIcons name={icon} size={24} color="white" />
                 <Text style={styles.title}>{name}</Text>
             </View>
             <AntDesign name="right" size={24} color='#fff' />
-        </View>
+        </TouchableOpacity>
     );
 };
 
