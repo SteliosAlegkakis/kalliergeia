@@ -96,23 +96,7 @@ export default function fieldDetails() {
     }
 
     return (
-        <ScrollView>
-            <Text style={styles.label}>Τοποθεσία</Text>
-            <View style={styles.mapContainer}>
-                <MapView
-                    style={styles.map}
-                    region={region}
-                    onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
-                    >
-                    {mapLocation && (
-                    <Marker coordinate={{ latitude: mapLocation.latitude, longitude: mapLocation.longitude }} draggable onDragEnd={handleMarkerDragEnd} />
-                    )}
-                </MapView>
-                <TouchableOpacity onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${mapLocation.latitude},${mapLocation.longitude}`)}>
-                    <Text style={styles.underlineText}>Προβολή στους χάρτες Google</Text>
-                </TouchableOpacity>
-            </View>   
-
+        <ScrollView>   
             <Text style={styles.label}>Αριθμός Δέντρων</Text>
             <TextInput
                 placeholderTextColor="white"
@@ -134,6 +118,22 @@ export default function fieldDetails() {
                 keyboardType='numeric'
                 onBlur={handleSizeBlur}
             />
+
+            <Text style={styles.label}>Τοποθεσία</Text>
+            <View style={styles.mapContainer}>
+                <MapView
+                    style={styles.map}
+                    region={region}
+                    onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
+                    >
+                    {mapLocation && (
+                    <Marker coordinate={{ latitude: mapLocation.latitude, longitude: mapLocation.longitude }} draggable onDragEnd={handleMarkerDragEnd} />
+                    )}
+                </MapView>
+                <TouchableOpacity onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${mapLocation.latitude},${mapLocation.longitude}`)}>
+                    <Text style={styles.underlineText}>Προβολή στους χάρτες Google</Text>
+                </TouchableOpacity>
+            </View>
 
             <Text style={styles.label}>Περιγραφή</Text>
             <TextInput
