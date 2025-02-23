@@ -11,7 +11,6 @@ export default function incomeForm() {
 
   const [oil, setOil] = useState('');
   const [pricePerKilo, setPricePerKilo] = useState('');
-  const [total, setTotal] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date());
 
@@ -32,14 +31,15 @@ export default function incomeForm() {
   }, []);
 
   const validateForm = () => {
-    if (!oil || !pricePerKilo || !total) return false;
+    if (!oil || !pricePerKilo) return false;
     return true;
   };
 
   const handleSubmit = () => {
     if (!validateForm()) Alert.alert('Προσοχη!', 'Συμπληρώστε τα υποχρεωτικά πεδία');
     else {
-      addSale(parseFloat(oil), parseFloat(pricePerKilo), parseFloat(total), date.toLocaleDateString('el-GR'), date.getFullYear(), description);
+      const total = parseFloat(oil) * parseFloat(pricePerKilo);
+      addSale(parseFloat(oil), parseFloat(pricePerKilo), total, date.toLocaleDateString('el-GR'), date.getFullYear(), description);
       Alert.alert('Επιτυχής Προσθήκη', 'Η πώληση προστέθηκε επιτυχώς');
       router.back();
     }
@@ -80,14 +80,6 @@ export default function incomeForm() {
         style={styles.input}
         value={pricePerKilo}
         onChangeText={(val) => setPricePerKilo(val.replace(/[^0-9.]/g, ''))}
-        keyboardType='numeric'
-      />
-
-      <Text style={styles.label}>Συνολικά έσοδα *</Text>
-      <TextInput
-        style={styles.input}
-        value={total}
-        onChangeText={(val) => setTotal(val.replace(/[^0-9.]/g, ''))}
         keyboardType='numeric'
       />
 
